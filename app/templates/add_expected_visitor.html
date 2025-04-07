@@ -10,14 +10,11 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
         }
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
-            max-width: 800px;
-            margin: 0 auto;
         }
         .card-header {
             background-color: #3498db;
@@ -26,9 +23,7 @@
         }
         .sidebar {
             background-color: #2c3e50;
-            min-height: 100vh;
             color: white;
-            padding: 20px;
         }
         .nav-link {
             color: rgba(255, 255, 255, 0.8);
@@ -37,37 +32,81 @@
             color: white;
             background-color: #3498db;
         }
+        .offcanvas {
+            background-color: #2c3e50;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 sidebar">
-                <h4 class="mb-4">Visitor Management</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'resident_dashboard' %}">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="fas fa-user-plus me-2"></i> Add Visitor
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="{% url 'logout' %}">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                        </a>
-                    </li>
-                </ul>
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            <!-- Sidebar for larger screens -->
+            <div class="col-lg-3 sidebar d-none d-lg-block vh-100 sticky-top">
+                <div class="p-3">
+                    <h4 class="mb-4">Visitor Management</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link rounded py-2 mb-2" href="{% url 'resident_dashboard' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active rounded py-2 mb-2" href="#">
+                                <i class="fas fa-user-plus me-2"></i> Add Visitor
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger rounded py-2" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Offcanvas/Hamburger Menu for smaller screens -->
+            <div class="d-lg-none">
+                <nav class="navbar navbar-dark bg-dark">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <span class="navbar-brand">Visitor Management</span>
+                    </div>
+                </nav>
+                
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="sidebarMenuLabel">Visitor Management</h5>
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link rounded py-2 mb-2" href="{% url 'resident_dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active rounded py-2 mb-2" href="#">
+                                    <i class="fas fa-user-plus me-2"></i> Add Visitor
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger rounded py-2" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Add Expected Visitor</h2>
+            <div class="col-12 col-lg-9 px-3 px-lg-4 py-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4">
+                    <h2 class="mb-3 mb-sm-0">Add Expected Visitor</h2>
                     <a href="{% url 'resident_dashboard' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
                     </a>
@@ -82,20 +121,20 @@
                     {% endfor %}
                 {% endif %}
 
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Visitor Information</h5>
+                        <h5 class="m-0">Visitor Information</h5>
                     </div>
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-12 col-md-6 mb-3 mb-md-0">
                                     <label class="form-label">Full Name</label>
                                     <input type="text" class="form-control" name="name" required 
                                            value="{{ name|default:'' }}">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-12 col-md-6">
                                     <label class="form-label">Phone Number</label>
                                     <input type="tel" class="form-control" name="phone" required
                                            value="{{ phone|default:'' }}">
@@ -108,12 +147,12 @@
                             </div>
                             
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-12 col-md-6 mb-3 mb-md-0">
                                     <label class="form-label">Vehicle Number (if any)</label>
                                     <input type="text" class="form-control" name="vehicle_number"
                                            value="{{ vehicle_number|default:'' }}">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-12 col-md-6">
                                     <label class="form-label">Expected Arrival</label>
                                     <input type="datetime-local" class="form-control" name="expected_arrival"
                                            value="{{ expected_arrival|default:'' }}">
@@ -121,7 +160,7 @@
                             </div>
                             
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit" class="btn btn-primary px-4 py-2">
                                     <i class="fas fa-save me-2"></i> Save Visitor
                                 </button>
                             </div>

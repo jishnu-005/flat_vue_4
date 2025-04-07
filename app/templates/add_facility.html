@@ -27,19 +27,10 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            padding: 2rem;
-            margin-top: 2rem;
         }
         
         .form-header {
             border-bottom: 1px solid #e3e6f0;
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .form-control, .form-select {
-            border-radius: 0.35rem;
-            padding: 0.75rem 1rem;
         }
         
         .form-control:focus, .form-select:focus {
@@ -50,11 +41,6 @@
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
-            padding: 0.5rem 1.5rem;
-        }
-        
-        .btn-outline-secondary {
-            padding: 0.5rem 1.5rem;
         }
         
         .form-label {
@@ -69,25 +55,25 @@
     </style>
 </head>
 <body>
-    <div class="container py-5">
+    <div class="container py-3 py-md-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="form-container">
-                    <div class="form-header">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="form-container p-3 p-md-4">
+                    <div class="form-header pb-2 pb-md-3 mb-3 mb-md-4">
                         <h2 class="h4 text-gray-900 mb-0">
                             <i class="fas fa-plus-circle me-2"></i>Add New {{ service_type }} Facility
                         </h2>
                     </div>
                     
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                         {% csrf_token %}
                         
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
                                 <label for="name" class="form-label required-field">Name</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6">
                                 <label for="location" class="form-label required-field">Location</label>
                                 <input type="text" class="form-control" id="location" name="location" required>
                             </div>
@@ -98,29 +84,31 @@
                             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
                         
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-sm-6">
                                 <label for="opening_time" class="form-label required-field">Opening Time</label>
                                 <input type="time" class="form-control" id="opening_time" name="opening_time" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-sm-6">
                                 <label for="closing_time" class="form-label required-field">Closing Time</label>
                                 <input type="time" class="form-control" id="closing_time" name="closing_time" required>
                             </div>
                         </div>
                         
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-sm-6">
                                 <label for="max_capacity" class="form-label required-field">Max Capacity</label>
                                 <input type="number" class="form-control" id="max_capacity" name="max_capacity" min="1" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Status</label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
-                                    <label class="form-check-label" for="is_active">
-                                        Active Facility
-                                    </label>
+                            <div class="col-12 col-sm-6 d-flex align-items-end mb-2 mb-sm-0">
+                                <div class="w-100">
+                                    <label class="form-label d-block">Status</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
+                                        <label class="form-check-label" for="is_active">
+                                            Active Facility
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -135,11 +123,11 @@
                             <input type="file" class="form-control" id="image" name="image">
                         </div>
                         
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'service_provider_facilities' %}" class="btn btn-outline-secondary">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
+                            <a href="{% url 'service_provider_facilities' %}" class="btn btn-outline-secondary w-100 w-sm-auto order-2 order-sm-1">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary w-100 w-sm-auto order-1 order-sm-2">
                                 <i class="fas fa-save me-2"></i>Save Facility
                             </button>
                         </div>
