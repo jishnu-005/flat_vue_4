@@ -10,14 +10,11 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
         }
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
-            max-width: 800px;
-            margin: 0 auto;
         }
         .card-header {
             background-color: #3498db;
@@ -26,9 +23,7 @@
         }
         .sidebar {
             background-color: #2c3e50;
-            min-height: 100vh;
             color: white;
-            padding: 20px;
         }
         .nav-link {
             color: rgba(255, 255, 255, 0.8);
@@ -37,139 +32,192 @@
             color: white;
             background-color: #3498db;
         }
+        .offcanvas-header {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .offcanvas-body {
+            background-color: #2c3e50;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 sidebar">
-                <h4 class="mb-4">Security Dashboard</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'security_home' %}">
-                            <i class="fas fa-tachometer-alt me-2"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="fas fa-user-plus me-2"></i> Unexpected
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'check_in_visitor' %}">
-                            <i class="fas fa-sign-in-alt me-2"></i> Check In
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="{% url 'logout' %}">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                        </a>
-                    </li>
-                </ul>
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            <!-- Sidebar for large screens -->
+            <div class="col-lg-3 sidebar d-none d-lg-block vh-100 position-fixed">
+                <div class="p-3">
+                    <h4 class="mb-4">Security Dashboard</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link rounded py-2 mb-1" href="{% url 'security_home' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active rounded py-2 mb-1" href="#">
+                                <i class="fas fa-user-plus me-2"></i> Unexpected
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded py-2 mb-1" href="{% url 'check_in_visitor' %}">
+                                <i class="fas fa-sign-in-alt me-2"></i> Check In
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger rounded py-2 mb-1" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Unexpected Visitor</h2>
-                    <a href="{% url 'security_dashboard' %}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
-                    </a>
+            <!-- Hamburger menu for small screens -->
+            <nav class="navbar d-lg-none bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand text-white" href="#">Security Dashboard</a>
+                    <button class="navbar-toggler bg-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title">Security Dashboard</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link rounded py-2 mb-1" href="{% url 'security_home' %}">
+                                        <i class="fas fa-tachometer-alt me-2"></i> Home
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active rounded py-2 mb-1" href="#">
+                                        <i class="fas fa-user-plus me-2"></i> Unexpected
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link rounded py-2 mb-1" href="{% url 'check_in_visitor' %}">
+                                        <i class="fas fa-sign-in-alt me-2"></i> Check In
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger rounded py-2 mb-1" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+            </nav>
 
-                {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <!-- Main Content with adjusted margins for different screens -->
+            <div class="col-12 col-lg-9 ms-auto">
+                <div class="p-3 p-lg-4">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4">
+                        <h2 class="mb-3 mb-sm-0">Unexpected Visitor</h2>
+                        <a href="{% url 'security_dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                        </a>
                     </div>
-                    {% endfor %}
-                {% endif %}
 
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Visitor Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" name="name" required 
-                                           value="{{ name|default:'' }}">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Visitor Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" name="name" required 
+                                               value="{{ name|default:'' }}">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" name="phone" required
+                                               value="{{ phone|default:'' }}">
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" name="phone" required
-                                           value="{{ phone|default:'' }}">
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Purpose of Visit</label>
+                                    <textarea class="form-control" name="purpose" rows="2" required>{{ purpose|default:'' }}</textarea>
                                 </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Purpose of Visit</label>
-                                <textarea class="form-control" name="purpose" rows="2" required>{{ purpose|default:'' }}</textarea>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Vehicle Number (if any)</label>
-                                    <input type="text" class="form-control" name="vehicle_number"
-                                           value="{{ vehicle_number|default:'' }}">
+                                
+                                <div class="row mb-3">
+                                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label">Vehicle Number (if any)</label>
+                                        <input type="text" class="form-control" name="vehicle_number"
+                                               value="{{ vehicle_number|default:'' }}">
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Add these fields to your form, after the vehicle number field -->
-<div class="row mb-3">
-    <div class="col-md-6">
-        <label class="form-label">Visiting Flat (if known)</label>
-        <select class="form-select" name="flat">
-            <option value="" selected>Select Flat (optional)</option>
-            {% for flat in flats %}
-            <option value="{{ flat.id }}">{{ flat.flat_number }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">Visiting Resident (if known)</label>
-        <select class="form-select" name="occupant">
-            <option value="" selected>Select Resident (optional)</option>
-            {% for occupant in occupants %}
-            <option value="{{ occupant.id }}">{{ occupant.full_name }} ({{ occupant.flat.flat_number }})</option>
-            {% endfor %}
-        </select>
-    </div>
-</div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">ID Proof Type</label>
-                                    <select class="form-select" name="id_proof_type" required>
-                                        <option value="" disabled selected>Select ID Type</option>
-                                        <option value="Aadhar" {% if id_proof_type == 'Aadhar' %}selected{% endif %}>Aadhar Card</option>
-                                        <option value="PAN" {% if id_proof_type == 'PAN' %}selected{% endif %}>PAN Card</option>
-                                        <option value="Driving License" {% if id_proof_type == 'Driving License' %}selected{% endif %}>Driving License</option>
-                                        <option value="Passport" {% if id_proof_type == 'Passport' %}selected{% endif %}>Passport</option>
-                                        <option value="Voter ID" {% if id_proof_type == 'Voter ID' %}selected{% endif %}>Voter ID</option>
-                                    </select>
+
+                                <div class="row mb-3">
+                                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label">Visiting Flat (if known)</label>
+                                        <select class="form-select" name="flat">
+                                            <option value="" selected>Select Flat (optional)</option>
+                                            {% for flat in flats %}
+                                            <option value="{{ flat.id }}">{{ flat.flat_number }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Visiting Resident (if known)</label>
+                                        <select class="form-select" name="occupant">
+                                            <option value="" selected>Select Resident (optional)</option>
+                                            {% for occupant in occupants %}
+                                            <option value="{{ occupant.id }}">{{ occupant.full_name }} ({{ occupant.flat.flat_number }})</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">ID Proof Number</label>
-                                    <input type="text" class="form-control" name="id_proof_number" required
-                                           value="{{ id_proof_number|default:'' }}">
+
+                                <div class="row mb-3">
+                                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label">ID Proof Type</label>
+                                        <select class="form-select" name="id_proof_type" required>
+                                            <option value="" disabled selected>Select ID Type</option>
+                                            <option value="Aadhar" {% if id_proof_type == 'Aadhar' %}selected{% endif %}>Aadhar Card</option>
+                                            <option value="PAN" {% if id_proof_type == 'PAN' %}selected{% endif %}>PAN Card</option>
+                                            <option value="Driving License" {% if id_proof_type == 'Driving License' %}selected{% endif %}>Driving License</option>
+                                            <option value="Passport" {% if id_proof_type == 'Passport' %}selected{% endif %}>Passport</option>
+                                            <option value="Voter ID" {% if id_proof_type == 'Voter ID' %}selected{% endif %}>Voter ID</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">ID Proof Number</label>
+                                        <input type="text" class="form-control" name="id_proof_number" required
+                                               value="{{ id_proof_number|default:'' }}">
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">ID Proof Image</label>
-                                <input type="file" class="form-control" name="id_proof_image" required>
-                            </div>
-                            
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary px-4">
-                                    <i class="fas fa-check-circle me-2"></i> Check In Visitor
-                                </button>
-                            </div>
-                        </form>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">ID Proof Image</label>
+                                    <input type="file" class="form-control" name="id_proof_image" required>
+                                </div>
+                                
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary px-4 py-2">
+                                        <i class="fas fa-check-circle me-2"></i> Check In Visitor
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

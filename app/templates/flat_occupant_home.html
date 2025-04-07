@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flat Occupant Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -20,46 +23,33 @@
             --light-gray: #e9ecef;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f7fa;
-            color: var(--dark);
-            display: flex;
-            min-height: 100vh;
-            line-height: 1.6;
+            overflow-x: hidden;
         }
         
+        /* Sidebar styles */
         .sidebar {
-            width: 280px;
             background: rgba(67, 97, 238, 0.85);
             color: white;
-            display: flex;
-            flex-direction: column;
+            height: 100%;
+        }
+        
+        .offcanvas-body {
+            padding: 0;
         }
         
         .sidebar-header {
-            padding: 25px;
+            padding: 20px 15px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .sidebar-header h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
-        }
-        
         .sidebar-menu {
-            padding: 15px 0;
+            padding: 0;
             margin: 0;
             list-style: none;
-            flex-grow: 1;
         }
         
         .sidebar-menu li {
@@ -71,7 +61,7 @@
         .sidebar-menu a {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
+            padding: 12px 15px;
             color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
             transition: all 0.3s ease;
@@ -96,138 +86,32 @@
             text-align: center;
         }
         
-        .badge {
-            display: inline-block;
-            padding: 3px 7px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            line-height: 1;
-            border-radius: 50px;
-            margin-left: auto;
+        .custom-badge {
             background-color: white;
             color: var(--primary);
         }
         
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            background-color: #f5f7fa;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .user-welcome h2 {
-            font-size: 1.8rem;
-            color: var(--dark);
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .user-welcome p {
-            color: var(--gray);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        
-        .card-header {
-            padding: 18px 20px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .card-header h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--dark);
-            margin: 0;
-        }
-        
-        .card-body {
-            padding: 20px;
-        }
-        
+        /* Status card styles */
         .status-card {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            border-radius: 10px;
             color: white;
-            margin-bottom: 15px;
+            border-radius: 10px;
         }
         
         .status-icon {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 15px;
+            font-size: 1.25rem;
             background: rgba(255, 255, 255, 0.2);
         }
         
-        .status-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            gap: 8px;
-            background: var(--primary);
-            color: white;
-            width: 100%;
-            margin-top: 15px;
-        }
-        
-        .bg-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .bg-success { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
-        .bg-warning { background: linear-gradient(135deg, #f72585, #b5179e); }
-        .bg-info { background: linear-gradient(135deg, #560bad, #3a0ca3); }
-        
         .notification-count {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -8px;
+            right: -8px;
             background: var(--danger);
             color: white;
             border-radius: 50%;
@@ -240,160 +124,292 @@
             font-weight: bold;
         }
         
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
+        .bg-primary-gradient { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        .bg-success-gradient { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #f72585, #b5179e); }
+        .bg-info-gradient { background: linear-gradient(135deg, #560bad, #3a0ca3); }
+        
+        /* Fixed sidebar for large screens */
+        @media (min-width: 992px) {
+            .sidebar-container {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
             }
             
-            .sidebar {
+            .main-content {
+                margin-left: 0;
+            }
+            
+            body {
+                display: flex;
+                flex-wrap: nowrap;
+            }
+            
+            .page-container {
+                display: flex;
                 width: 100%;
             }
+        }
+        
+        /* Card adjustments for different screen sizes */
+        @media (max-width: 767.98px) {
+            .card {
+                margin-bottom: 20px;
+            }
             
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            .header-section {
+                margin-bottom: 15px;
+            }
+            
+            .user-welcome h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .user-welcome h2 {
+                font-size: 1.3rem;
+            }
+            
+            .status-card {
+                padding: 10px !important;
+            }
+            
+            .status-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .card-body {
+                padding: 15px;
             }
         }
     </style>
 </head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h3>Flat Occupant Portal</h3>
+<body class="d-flex flex-column flex-lg-row min-vh-100">
+    <!-- Sidebar for large screens -->
+    <div class="sidebar d-none d-lg-block" style="width: 280px;">
+        <div class="sidebar-container">
+            <div class="sidebar-header">
+                <h3 class="h4 mb-0">Flat Occupant Portal</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/flat_occupant_home/" class="active"><i class="fas fa-home menu-icon"></i> <span>Dashboard</span></a></li>
+                <li><a href="/flat_occupant_profile/"><i class="fas fa-user menu-icon"></i> <span>My Profile</span></a></li>
+                <li><a href="/flat_occupant_medicine_list/"><i class="fas fa-pills menu-icon"></i> <span>Medicines</span></a></li>
+                <li><a href="/flat_occupant_product_list/"><i class="fas fa-box-open menu-icon"></i> <span>Products</span></a></li>
+                <li><a href="/flat_occupant_cart_view/"><i class="fas fa-shopping-cart menu-icon"></i> <span>My Cart</span> 
+                    <span class="badge rounded-pill custom-badge ms-auto">{{ cart_items }}</span>
+                </a></li>
+                <li><a href="/view_notifications/"><i class="fas fa-bell menu-icon"></i> <span>Notifications</span> 
+                    <span class="badge rounded-pill custom-badge ms-auto">{{ unread_notifications }}</span>
+                </a></li>
+                <li><a href="/view_my_complaints/"><i class="fas fa-exclamation-circle menu-icon"></i> <span>Complaints</span></a></li>
+                <li><a href="/flat_occupant_orders/"><i class="fas fa-clipboard-list menu-icon"></i> <span>My Orders</span></a></li>
+                <li><a href="/resident_dashboard/"><i class="fas fa-users menu-icon"></i> <span>Manage Visitors</span></a></li>
+                <li><a href="/facilities/"><i class="fas fa-dumbbell menu-icon"></i> <span>Facilities</span></a></li>
+                <li><a href="/chat/"><i class="fas fa-comments menu-icon"></i> <span>Chat with Security</span></a></li>
+                <li><a href="/flat_occupant_supermarket_list/"><i class="fas fa-store menu-icon"></i> <span>Supermarkets</span></a></li>
+                <li><a href="/flat_occupant_medicalstore_list/"><i class="fas fa-prescription-bottle-medical menu-icon"></i> <span>Medical Stores</span></a></li>
+                <li><a href="/logout/"><i class="fas fa-sign-out-alt menu-icon"></i> <span>Logout</span></a></li>
+            </ul>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/flat_occupant_home/" class="active"><i class="fas fa-home menu-icon"></i> <span>Dashboard</span></a></li>
-            <li><a href="/flat_occupant_profile/"><i class="fas fa-user menu-icon"></i> <span>My Profile</span></a></li>
-            <li><a href="/flat_occupant_medicine_list/"><i class="fas fa-pills menu-icon"></i> <span>Medicines</span></a></li>
-            <li><a href="/flat_occupant_product_list/"><i class="fas fa-box-open menu-icon"></i> <span>Products</span></a></li>
-            <li><a href="/flat_occupant_cart_view/"><i class="fas fa-shopping-cart menu-icon"></i> <span>My Cart</span> 
-                {% if cart_items > 0 %}<span class="badge">{{ cart_items }}</span>{% endif %}
-            </a></li>
-            <li><a href="/view_notifications/"><i class="fas fa-bell menu-icon"></i> <span>Notifications</span> 
-                {% if unread_notifications > 0 %}<span class="badge">{{ unread_notifications }}</span>{% endif %}
-            </a></li>
-            <li><a href="/view_my_complaints/"><i class="fas fa-exclamation-circle menu-icon"></i> <span>Complaints</span></a></li>
-            <li><a href="/flat_occupant_orders/"><i class="fas fa-clipboard-list menu-icon"></i> <span>My Orders</span></a></li>
-            <li><a href="/resident_dashboard/"><i class="fas fa-users menu-icon"></i> <span>Manage Visitors</span></a></li>
-            <li><a href="/facilities/"><i class="fas fa-dumbbell menu-icon"></i> <span>Facilities</span></a></li>
-            <li><a href="/chat/"><i class="fas fa-comments menu-icon"></i> <span>Chat with Security</span></a></li>
-            <li><a href="/flat_occupant_supermarket_list/"><i class="fas fa-store menu-icon"></i> <span>Supermarkets</span></a></li>
-            <li><a href="/flat_occupant_medicalstore_list/"><i class="fas fa-prescription-bottle-medical menu-icon"></i> <span>Medical Stores</span></a></li>
+    </div>
 
-            <li><a href="/logout/"><i class="fas fa-sign-out-alt menu-icon"></i> <span>Logout</span></a></li>
-        </ul>
+    <!-- Offcanvas sidebar for mobile and tablets -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel" style="width: 280px;">
+        <div class="offcanvas-header" style="background: rgba(67, 97, 238, 0.85); color: white;">
+            <h5 class="offcanvas-title" id="mobileSidebarLabel">Flat Occupant Portal</h5>
+            <button type="button" class="btn-close text-reset btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="/flat_occupant_home/" class="active"><i class="fas fa-home menu-icon"></i> <span>Dashboard</span></a></li>
+                <li><a href="/flat_occupant_profile/"><i class="fas fa-user menu-icon"></i> <span>My Profile</span></a></li>
+                <li><a href="/flat_occupant_medicine_list/"><i class="fas fa-pills menu-icon"></i> <span>Medicines</span></a></li>
+                <li><a href="/flat_occupant_product_list/"><i class="fas fa-box-open menu-icon"></i> <span>Products</span></a></li>
+                <li><a href="/flat_occupant_cart_view/"><i class="fas fa-shopping-cart menu-icon"></i> <span>My Cart</span> 
+                    <span class="badge rounded-pill custom-badge ms-auto">{{ cart_items }}</span>
+                </a></li>
+                <li><a href="/view_notifications/"><i class="fas fa-bell menu-icon"></i> <span>Notifications</span> 
+                    <span class="badge rounded-pill custom-badge ms-auto">{{ unread_notifications }}</span>
+                </a></li>
+                <li><a href="/view_my_complaints/"><i class="fas fa-exclamation-circle menu-icon"></i> <span>Complaints</span></a></li>
+                <li><a href="/flat_occupant_orders/"><i class="fas fa-clipboard-list menu-icon"></i> <span>My Orders</span></a></li>
+                <li><a href="/resident_dashboard/"><i class="fas fa-users menu-icon"></i> <span>Manage Visitors</span></a></li>
+                <li><a href="/facilities/"><i class="fas fa-dumbbell menu-icon"></i> <span>Facilities</span></a></li>
+                <li><a href="/chat/"><i class="fas fa-comments menu-icon"></i> <span>Chat with Security</span></a></li>
+                <li><a href="/flat_occupant_supermarket_list/"><i class="fas fa-store menu-icon"></i> <span>Supermarkets</span></a></li>
+                <li><a href="/flat_occupant_medicalstore_list/"><i class="fas fa-prescription-bottle-medical menu-icon"></i> <span>Medical Stores</span></a></li>
+                <li><a href="/logout/"><i class="fas fa-sign-out-alt menu-icon"></i> <span>Logout</span></a></li>
+            </ul>
+        </div>
     </div>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <!-- Header -->
-            <div class="header">
-                <div class="user-welcome">
-                    <h2>Welcome back, {{ occupant.full_name }}!</h2>
-                    <p><i class="fas fa-clock"></i> Last login: {{ last_login|date:"F j, Y H:i A" }}</p>
+    <div class="flex-grow-1 main-content">
+        <div class="container-fluid px-3 px-md-4 py-3">
+            <!-- Mobile Navbar -->
+            <nav class="navbar navbar-expand-lg d-lg-none mb-3 px-0">
+                <div class="container-fluid px-0">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand mb-0 h1 mx-auto">Flat Occupant Portal</span>
+                    <div style="position: relative;">
+                        <a href="/view_notifications/" class="btn btn-light position-relative">
+                            <i class="fas fa-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ unread_notifications }}
+                            </span>
+                        </a>
+                    </div>
                 </div>
-                <div style="position: relative;">
-                    <a href="/view_notifications/" style="color: var(--primary); font-size: 1.2rem;">
-                        <i class="fas fa-bell"></i>
-                        {% if unread_notifications > 0 %}
-                        <span class="notification-count">{{ unread_notifications }}</span>
-                        {% endif %}
-                    </a>
+            </nav>
+
+            <!-- Header Section -->
+            <div class="header-section mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="user-welcome">
+                            <h2 class="mb-1">Welcome back, {{ occupant.full_name }}!</h2>
+                            <p class="text-muted mb-0 small"><i class="fas fa-clock me-1"></i> Last login: {{ last_login|date:"F j, Y H:i A" }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-none d-lg-block text-end">
+                        <div style="position: relative; display: inline-block;">
+                            <a href="/view_notifications/" class="btn btn-light position-relative">
+                                <i class="fas fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ unread_notifications }}
+                                </span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3">
                 <!-- Pending Orders Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Pending Orders</h3>
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="status-card bg-primary">
-                            <div class="status-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3>{{ pending_orders }}</h3>
-                                <p>Orders in process</p>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Pending Orders</h5>
+                                <i class="fas fa-clipboard-list text-primary"></i>
                             </div>
                         </div>
-                        <a href="/flat_occupant_orders/" class="btn">
-                            <i class="fas fa-eye"></i> View All Orders
-                        </a>
+                        <div class="card-body">
+                            <div class="status-card bg-primary-gradient p-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="status-icon me-3">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-1 h4">{{ pending_orders }}</h3>
+                                        <p class="mb-0">Orders in process</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/flat_occupant_orders/" class="btn btn-primary w-100">
+                                <i class="fas fa-eye me-2"></i> View All Orders
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Visitors Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Today's Visitors</h3>
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="status-card bg-success">
-                            <div class="status-icon">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3>{{ today_visitors }}</h3>
-                                <p>Visitors expected</p>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Today's Visitors</h5>
+                                <i class="fas fa-users text-success"></i>
                             </div>
                         </div>
-                        <a href="/resident_dashboard/" class="btn">
-                            <i class="fas fa-plus"></i> Add New Visitor
-                        </a>
+                        <div class="card-body">
+                            <div class="status-card bg-success-gradient p-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="status-icon me-3">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-1 h4">{{ today_visitors }}</h3>
+                                        <p class="mb-0">Visitors expected</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/resident_dashboard/" class="btn btn-success w-100">
+                                <i class="fas fa-plus me-2"></i> Add New Visitor
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Complaints Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Open Complaints</h3>
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="status-card bg-warning">
-                            <div class="status-icon">
-                                <i class="fas fa-tools"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3>{{ open_complaints }}</h3>
-                                <p>Active complaints</p>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Open Complaints</h5>
+                                <i class="fas fa-exclamation-circle text-warning"></i>
                             </div>
                         </div>
-                        <a href="/view_my_complaints/" class="btn">
-                            <i class="fas fa-plus"></i> New Complaint
-                        </a>
+                        <div class="card-body">
+                            <div class="status-card bg-warning-gradient p-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="status-icon me-3">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-1 h4">{{ open_complaints }}</h3>
+                                        <p class="mb-0">Active complaints</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/view_my_complaints/" class="btn btn-warning w-100 text-white">
+                                <i class="fas fa-plus me-2"></i> New Complaint
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Cart Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Cart Items</h3>
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="status-card bg-info">
-                            <div class="status-icon">
-                                <i class="fas fa-boxes"></i>
-                            </div>
-                            <div class="status-info">
-                                <h3>{{ cart_items }}</h3>
-                                <p>Items in cart</p>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Cart Items</h5>
+                                <i class="fas fa-shopping-cart text-info"></i>
                             </div>
                         </div>
-                        <a href="/flat_occupant_cart_view/" class="btn">
-                            <i class="fas fa-arrow-right"></i> Proceed to Checkout
-                        </a>
+                        <div class="card-body">
+                            <div class="status-card bg-info-gradient p-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="status-icon me-3">
+                                        <i class="fas fa-boxes"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-1 h4">{{ cart_items }}</h3>
+                                        <p class="mb-0">Items in cart</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/flat_occupant_cart_view/" class="btn btn-info w-100 text-white">
+                                <i class="fas fa-arrow-right me-2"></i> Proceed to Checkout
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

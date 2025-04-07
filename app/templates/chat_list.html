@@ -25,7 +25,7 @@
         
         .chat-container {
             max-width: 1400px;
-            margin: 2rem auto;
+            margin: 1rem auto;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             border-radius: 0.35rem;
             overflow: hidden;
@@ -33,7 +33,6 @@
         
         .sidebar {
             background-color: white;
-            height: calc(100vh - 4rem);
             border-right: 1px solid var(--border-color);
             padding: 1.5rem;
         }
@@ -64,7 +63,6 @@
         
         .main-content {
             background-color: white;
-            min-height: calc(100vh - 4rem);
             padding: 1.5rem;
         }
         
@@ -75,6 +73,7 @@
         .chat-header h2 {
             color: var(--text-color);
             font-weight: 700;
+            font-size: calc(1.2rem + 0.6vw);
         }
         
         .btn-primary {
@@ -170,16 +169,41 @@
         .new-message {
             animation: pulse 2s infinite;
         }
+
+        /* Mobile styles */
+        @media (max-width: 767.98px) {
+            .chat-container {
+                margin: 0;
+                max-width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .chat-header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .list-group-item:hover {
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid chat-container">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 sidebar">
-                <h4><i class="fas fa-comments me-2"></i>Chat</h4>
+        <div class="row g-0">
+            <!-- Sidebar - Now using responsive column classes -->
+            <div class="col-12 col-md-4 col-lg-3 sidebar">
+                <h4 class="d-flex align-items-center">
+                    <i class="fas fa-comments me-2"></i>Chat
+                </h4>
                 
-                <!-- Search box (enhancement) -->
+                <!-- Search box -->
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="form-control" placeholder="Search conversations...">
@@ -207,17 +231,17 @@
                 </ul>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-9 main-content">
-                <div class="d-flex justify-content-between align-items-center chat-header">
-                    <h2><i class="fas fa-comment-dots me-2"></i>Chat Conversations</h2>
+            <!-- Main Content - Now using responsive column classes -->
+            <div class="col-12 col-md-8 col-lg-9 main-content">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 chat-header">
+                    <h2 class="mb-3 mb-md-0"><i class="fas fa-comment-dots me-2"></i>Chat Conversations</h2>
                     
                     <!-- New Chat Button with Dropdown -->
                     <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="newChatDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-primary dropdown-toggle w-100 w-md-auto" type="button" id="newChatDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-plus me-2"></i> New Chat
                         </button>
-                        <ul class="dropdown-menu shadow" aria-labelledby="newChatDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="newChatDropdown">
                             {% if user_type == 'occupant' %}
                                 {% for security in security_list %}
                                 <li>
@@ -250,17 +274,16 @@
                 <div class="list-group shadow-sm">
                     {% for room in chat_rooms %}
                     <a href="{% url 'chat_room' room.id %}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1 chat-item-title">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <h5 class="mb-1 chat-item-title text-break">
                                 {% if user_type == 'occupant' %}
                                     <i class="fas fa-user-shield me-2 text-primary"></i>{{ room.security.name }} (Security)
                                 {% else %}
                                     <i class="fas fa-user me-2 text-primary"></i>{{ room.occupant.full_name }} (Flat {{ room.occupant.flat.flat_number }})
                                 {% endif %}
                             </h5>
-                            
                         </div>
-                        <p class="mb-1 last-message">
+                        <p class="mb-1 last-message text-break">
                             {% with last_message=room.messages.last %}
                                 {% if last_message %}
                                     {% if last_message.sender_type == 'Occupant' %}
