@@ -1,0 +1,131 @@
+{% load static order_filters %}
+
+{% block head %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Complete Your Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h5>Total Amount: ₹{{ amount|floatformat:2 }}</h5>
+                        <p class="text-muted">Payment for {{ description }}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>Order Summary:</h6>
+                        <ul class="list-group">
+                            {% for order in orders %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ order.product.name }} (x{{ order.quantity }})</span>
+                                <span>₹{{ order.price|multiply:order.quantity|floatformat:2 }}</span>
+                            </li>
+                            {% endfor %}
+                            <li class="list-group-item list-group-item-secondary d-flex justify-content-between">
+                                <strong>Total</strong>
+                                <strong>₹{{ amount|floatformat:2 }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <form id="payment-form">
+                        <button type="button" id="rzp-button" class="btn btn-primary btn-lg btn-block">
+                            Pay Now ₹{{ amount|floatformat:2 }}
+                        </button>
+                    </form>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle"></i> You will be redirected to Razorpay's secure payment page.
+                    </div>
+                    
+                    <noscript>
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> JavaScript is required for payment processing. 
+                            Please enable JavaScript in your browser.
+                        </div>
+                    </noscript>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const options = {
+        key: "{{ razorpay_key }}",
+        amount: "{{ amount|multiply:100 }}", 
+        currency: "{{ currency }}",
+        order_id: "{{ razorpay_order_id }}",
+        name: "{{ name }}",
+        description: "{{ description }}",
+        image: "{% static 'img/logo.png' %}",
+        handler: function(response) {
+            // Create a hidden form and submit it to the callback URL
+            const form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', "{{ callback_url }}");
+            
+            // Add payment parameters
+            const razorpay_payment_id = document.createElement('input');
+            razorpay_payment_id.setAttribute('type', 'hidden');
+            razorpay_payment_id.setAttribute('name', 'razorpay_payment_id');
+            razorpay_payment_id.setAttribute('value', response.razorpay_payment_id);
+            form.appendChild(razorpay_payment_id);
+            
+            const razorpay_order_id = document.createElement('input');
+            razorpay_order_id.setAttribute('type', 'hidden');
+            razorpay_order_id.setAttribute('name', 'razorpay_order_id');
+            razorpay_order_id.setAttribute('value', response.razorpay_order_id);
+            form.appendChild(razorpay_order_id);
+            
+            const razorpay_signature = document.createElement('input');
+            razorpay_signature.setAttribute('type', 'hidden');
+            razorpay_signature.setAttribute('name', 'razorpay_signature');
+            razorpay_signature.setAttribute('value', response.razorpay_signature);
+            form.appendChild(razorpay_signature);
+            
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.setAttribute('type', 'hidden');
+            csrfToken.setAttribute('name', 'csrfmiddlewaretoken');
+            csrfToken.setAttribute('value', "{{ csrf_token }}");
+            form.appendChild(csrfToken);
+            
+            document.body.appendChild(form);
+            form.submit();
+        },
+        prefill: {
+            name: "{{ user.full_name }}",
+            email: "{{ user.email }}",
+            contact: "{{ user.contact_number }}"
+        },
+        theme: {
+            color: "#F37254"
+        },
+        modal: {
+            ondismiss: function() {
+                // Handle when user closes the payment form
+                window.location.href = "{% url 'flat_occupant_supermarket_orders' %}";
+            }
+        }
+    };
+    
+    const rzp = new Razorpay(options);
+    
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    }
+    
+    // Auto-open payment form (optional)
+    // rzp.open();
+});
+</script>
+{% endblock %}

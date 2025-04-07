@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Management</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin: 0;
+        }
+        
+        .filters {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .visitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .visitor-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .visitor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .visitor-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .visitor-type {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            width: 100px;
+            color: #666;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-checkedin { background: #cce5ff; color: #004085; }
+        .status-checkedout { background: #e2e3e5; color: #383d41; }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        .today-badge {
+            background: var(--success);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Visitor Management <span class="today-badge">Today: {{ today }}</span></h1>
+        </div>
+        
+        <div class="filters">
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" onchange="filterVisitors()">
+                    <option value="">All Statuses</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if value == status_filter %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label for="visitor_type">Visitor Type:</label>
+                <select id="visitor_type" onchange="filterVisitors()">
+                    <option value="">All Types</option>
+                    {% for value, label in visitor_type_choices %}
+                    <option value="{{ value }}" {% if value == visitor_type_filter %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <div class="visitor-grid">
+            {% for visitor in visitors %}
+            <div class="visitor-card">
+                <div class="card-header">
+                    <span class="visitor-name">{{ visitor.name }}</span>
+                    <span class="visitor-type">{{ visitor.get_visitor_type_display }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="detail-row">
+                        <span class="detail-label">Phone:</span>
+                        <span class="detail-value">{{ visitor.phone }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Flat:</span>
+                        <span class="detail-value">
+                            {% if visitor.flat %}
+                                {{ visitor.flat.block }} - {{ visitor.flat.floor }} - {{ visitor.flat.flat_number }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Arrival:</span>
+                        <span class="detail-value">
+                            {% if visitor.expected_arrival %}
+                                {{ visitor.expected_arrival|date:"M d, Y h:i A" }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value">
+                            <span class="status status-{{ visitor.status|lower }}">{{ visitor.get_status_display }}</span>
+                        </span>
+                    </div>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <a href="{% url 'admin_visitor_detail' visitor.id %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 8px;">
+                <p style="font-size: 18px; color: #666;">No visitors found matching your criteria</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <script>
+        function filterVisitors() {
+            const status = document.getElementById('status').value;
+            const visitorType = document.getElementById('visitor_type').value;
+            
+            let url = '{% url "admin_visitor_list" %}?';
+            if (status) url += `status=${status}&`;
+            if (visitorType) url += `visitor_type=${visitorType}`;
+            
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

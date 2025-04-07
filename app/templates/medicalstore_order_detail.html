@@ -1,0 +1,234 @@
+{% load order_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Order #{{ order.id }} Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .medicine-img {
+            max-height: 250px;
+            width: auto;
+            border-radius: 8px;
+        }
+        .info-card {
+            border-left: 4px solid #4e73df;
+        }
+        .expiry-badge {
+            background-color: #f8f9fa;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0">Medicine Order #{{ order.id }}</h1>
+            <a href="{% url 'medicalstore_orders' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to Orders
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Order Summary -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Order Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Customer Details</h5>
+                                <p>
+                                    <strong>Name:</strong> {{ order.user.full_name }}<br>
+                                    <strong>Contact:</strong> {{ order.user.contact_number }}<br>
+                                    <strong>Email:</strong> {{ order.user.email }}<br>
+                                    <strong>Flat:</strong> {{ order.user.flat.flat_number }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Order Information</h5>
+                                <p>
+                                    <strong>Status:</strong> 
+                                    <span class="badge 
+                                        {% if order.status == 'Delivered' %}bg-success
+                                        {% elif order.status == 'Cancelled' %}bg-danger
+                                        {% else %}bg-warning text-dark{% endif %}">
+                                        {{ order.status }}
+                                    </span><br>
+                                    <strong>Payment:</strong> 
+                                    <span class="badge 
+                                        {% if order.payment_status == 'Completed' %}bg-success
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ order.payment_status }}
+                                    </span><br>
+                                    <strong>Order Date:</strong> {{ order.placed_at|date:"d M Y H:i" }}<br>
+                                    {% if order.estimated_delivery %}
+                                        <strong>Est. Delivery:</strong> {{ order.estimated_delivery|date:"d M Y" }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Medicine Details -->
+                        <div class="d-flex align-items-start mb-4">
+                            <img src="{{ order.medicines.image.url }}" alt="{{ order.medicines.name }}" 
+                                 class="medicine-img me-4">
+                            <div>
+                                <h4>{{ order.medicines.name }}</h4>
+                                <p class="text-muted">{{ order.medicines.medicalstore.name }}</p>
+                                <p>
+                                    <strong>Manufacturer:</strong> {{ order.medicines.manufacturer }}<br>
+                                    <strong>Expiry:</strong> 
+                                    <span class="badge expiry-badge">
+                                        {{ order.medicines.expiry_date|date:"d M Y" }}
+                                    </span><br>
+                                    <strong>Price:</strong> ₹{{ order.medicines.price }}<br>
+                                    <strong>Stock:</strong> {{ order.medicines.stock }}
+                                </p>
+                                <p><strong>Description:</strong> {{ order.medicines.description }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Order Metrics -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card info-card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Quantity Ordered</h6>
+                                        <p class="card-text h4">{{ order.quantity }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card info-card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Unit Price</h6>
+                                        <p class="card-text h4">₹{{ order.price }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card info-card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Total Amount</h6>
+                                        <p class="card-text h4">₹{{ order.price|multiply:order.quantity }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracking History -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Tracking History</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if order.tracking_history and order.tracking_history.entries %}
+                            <div class="timeline">
+                                {% for entry in order.tracking_history.entries reversed %}
+                                <div class="timeline-item mb-3">
+                                    <div class="timeline-content">
+                                        <h6 class="mb-1">{{ entry.status }}</h6>
+                                        <small class="text-muted">{{ entry.timestamp|date:"d M Y H:i" }}</small>
+                                        {% if entry.notes %}
+                                            <p class="mt-1 mb-0">{{ entry.notes }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No tracking history available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Status Update -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Update Status</h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'update_order_status' order_id=order.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Order Status</label>
+                                <select name="status" class="form-select" required>
+                                    {% for choice in status_choices %}
+                                        <option value="{{ choice }}" {% if choice == order.status %}selected{% endif %}>
+                                            {{ choice }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Payment Status</label>
+                                <select name="payment_status" class="form-select" required>
+                                    <option value="Pending" {% if order.payment_status == 'Pending' %}selected{% endif %}>
+                                        Pending
+                                    </option>
+                                    <option value="Completed" {% if order.payment_status == 'Completed' %}selected{% endif %}>
+                                        Completed
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estimated Delivery Date</label>
+                                <input type="date" name="estimated_delivery" 
+                                value="{% if order.estimated_delivery %}{{ order.estimated_delivery|date:'Y-m-d' }}{% endif %}" 
+                                class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status Notes</label>
+                                <textarea name="status_notes" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="send_email" id="sendEmail">
+                                <label class="form-check-label" for="sendEmail">
+                                    Notify customer via email
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Update Order</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Customer Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <h5>{{ order.user.full_name }}</h5>
+                        <p>
+                            <strong>Contact:</strong> {{ order.user.contact_number }}<br>
+                            <strong>Email:</strong> {{ order.user.email }}<br>
+                            <strong>Flat:</strong> {{ order.user.flat.flat_number }}<br>
+                            <strong>Type:</strong> {{ order.user.occupant_type }}
+                        </p>
+                        <hr>
+                        <h6>Emergency Contact</h6>
+                        <p>
+                            {{ order.user.emergency_contact_name }}<br>
+                            {{ order.user.emergency_contact_number }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

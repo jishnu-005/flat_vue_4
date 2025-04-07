@@ -1,0 +1,430 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #ff4081;
+            --success-color: #4caf50;
+            --info-color: #00bcd4;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            transition: all 0.3s;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-card {
+            border-left: 4px solid;
+            border-radius: 8px;
+        }
+        
+        .metric-card.gym {
+            border-left-color: var(--primary-color);
+        }
+        
+        .metric-card.pool {
+            border-left-color: var(--info-color);
+        }
+        
+        .metric-card.medical {
+            border-left-color: var(--danger-color);
+        }
+        
+        .metric-card.supermarket {
+            border-left-color: var(--success-color);
+        }
+        
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .gym-icon {
+            color: var(--primary-color);
+        }
+        
+        .pool-icon {
+            color: var(--info-color);
+        }
+        
+        .medical-icon {
+            color: var(--danger-color);
+        }
+        
+        .supermarket-icon {
+            color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="text-center py-4">
+            {% if provider.profile_image %}
+                <img src="{{ provider.profile_image.url }}" class="profile-img rounded-circle mb-3">
+            {% else %}
+                <img src="{% static 'images/default-profile.png' %}" class="profile-img rounded-circle mb-3">
+            {% endif %}
+            <h5>{{ provider.name }}</h5>
+            <span class="badge bg-light text-dark">{{ service_type }}</span>
+        </div>
+        
+        <ul class="nav flex-column px-3">
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'dashboard' %}active{% endif %}" href="/service_provider_home/">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            
+            {% if service_type == 'Gym' %}
+            <li class="nav-item">
+                <a class="nav-link" href="/service_provider_facility_management/">
+                    <i class="fas fa-swimmer"></i> Manage Requests
+                </a>
+            </li>
+               
+            {% elif service_type == 'Swimming Pool' %}
+            <li class="nav-item">
+                <a class="nav-link" href="/service_provider_facility_management/">
+                    <i class="fas fa-swimmer"></i> Manage Requests
+                </a>
+            
+            {% elif service_type == 'Medical Store' %}
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/service_provider_medicalstore_list/">
+                        <i class="fas fa-pills"></i> Medical Stores
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/service_provider_dashboard/">
+                        <i class="fas fa-boxes"></i> View Orders
+                    </a>
+                </li>
+            {% elif service_type == 'Supermarket' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/service_provider_supermarket_list/">
+                        <i class="fas fa-boxes"></i> Supermarkets
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/service_provider_dashboard/">
+                        <i class="fas fa-boxes"></i> View Orders
+                    </a>
+                </li>
+                
+            {% endif %}
+            <li class="nav-item mt-4">
+                <a class="nav-link" href="/view_notifications/">
+                    <i class="fas fa-bell menu-icon"></i> Notifications
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link" href="/view_sp_complaints/">
+                    <i class="fas fa-exclamation-circle menu-icon"></i> Complaints
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link" href="/logout/">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>{{ title }}</h2>
+                <span class="text-muted">{% now "F j, Y" %}</span>
+            </div>
+            
+            <!-- Metrics Cards -->
+            <div class="row">
+                {% if service_type == 'Gym' %}
+                    <div class="col-md-4">
+                        <div class="card metric-card gym">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Potential Members</h6>
+                                        <h3>{{ metrics.members }}</h3>
+                                    </div>
+                                    <i class="fas fa-users gym-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card gym">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Bookings</h6>
+                                        <h3>{{ metrics.bookings }}</h3>
+                                    </div>
+                                    <i class="fas fa-calendar-alt gym-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card gym">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Active Bookings</h6>
+                                        <h3>{{ metrics.active_bookings }}</h3>
+                                    </div>
+                                    <i class="fas fa-check-circle gym-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                {% elif service_type == 'Swimming Pool' %}
+                    <div class="col-md-4">
+                        <div class="card metric-card pool">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Bookings</h6>
+                                        <h3>{{ metrics.bookings }}</h3>
+                                    </div>
+                                    <i class="fas fa-calendar-alt pool-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card pool">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Active Bookings</h6>
+                                        <h3>{{ metrics.active_bookings }}</h3>
+                                    </div>
+                                    <i class="fas fa-check-circle pool-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card pool">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Today's Bookings</h6>
+                                        <h3>{{ metrics.today_bookings }}</h3>
+                                    </div>
+                                    <i class="fas fa-swimmer pool-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                {% elif service_type == 'Medical Store' %}
+                    <div class="col-md-4">
+                        <div class="card metric-card medical">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Inventory Items</h6>
+                                        <h3>{{ metrics.inventory }}</h3>
+                                    </div>
+                                    <i class="fas fa-pills medical-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card medical">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Orders</h6>
+                                        <h3>{{ metrics.orders }}</h3>
+                                    </div>
+                                    <i class="fas fa-shopping-bag medical-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card medical">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Pending Orders</h6>
+                                        <h3>{{ metrics.pending_orders }}</h3>
+                                    </div>
+                                    <i class="fas fa-clock medical-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                {% elif service_type == 'Supermarket' %}
+                    <div class="col-md-4">
+                        <div class="card metric-card supermarket">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Products</h6>
+                                        <h3>{{ metrics.products }}</h3>
+                                    </div>
+                                    <i class="fas fa-boxes supermarket-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card supermarket">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Orders</h6>
+                                        <h3>{{ metrics.orders }}</h3>
+                                    </div>
+                                    <i class="fas fa-shopping-bag supermarket-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card metric-card supermarket">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Pending Orders</h6>
+                                        <h3>{{ metrics.pending_orders }}</h3>
+                                    </div>
+                                    <i class="fas fa-clock supermarket-icon service-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+          <!-- Previous template code remains same until Recent Activity section -->
+
+<!-- Recent Activity Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if service_type == 'Gym' or service_type == 'Swimming Pool' %}
+                    {% if recent_activities %}
+                        <ul class="list-group list-group-flush">
+                            {% for booking in recent_activities %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="fas {% if booking.status == 'Approved' %}fa-check-circle text-success{% elif booking.status == 'Pending' %}fa-clock text-warning{% else %}fa-times-circle text-danger{% endif %} me-2"></i>
+                                    Booking by {{ booking.user.full_name }} ({{ booking.get_status_display }})
+                                </span>
+                                <small class="text-muted">{{ booking.created_at|timesince }} ago</small>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info">No recent bookings</div>
+                    {% endif %}
+                
+                {% elif service_type == 'Medical Store' or service_type == 'Supermarket' %}
+                    {% if recent_activities %}
+                        <ul class="list-group list-group-flush">
+                            {% for order in recent_activities %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="fas {% if order.status == 'Delivered' %}fa-check-circle text-success{% elif order.status == 'Pending' %}fa-clock text-warning{% else %}fa-truck text-primary{% endif %} me-2"></i>
+                                    Order #{{ order.id }} by {{ order.user.full_name }} ({{ order.get_status_display }})
+                                </span>
+                                <small class="text-muted">{{ order.placed_at|timesince }} ago</small>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info">No recent orders</div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rest of the template remains same -->
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

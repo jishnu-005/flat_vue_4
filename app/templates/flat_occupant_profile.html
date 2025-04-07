@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6e9dde;
+            --accent-color: #f3f7ff;
+            --text-dark: #333;
+            --text-light: #6c757d;
+            --border-radius: 10px;
+            --box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fc;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .back-button:hover {
+            background-color: #3c5a85;
+            transform: translateY(-2px);
+        }
+        
+        .back-icon {
+            margin-right: 8px;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+            gap: 20px;
+        }
+        
+        .col-sidebar {
+            flex: 1;
+            padding: 0 15px;
+            min-width: 250px;
+            max-width: 300px;
+        }
+        
+        .col-main {
+            flex: 2;
+            padding: 0 15px;
+            min-width: 300px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            transform: translateY(-3px);
+        }
+        
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            font-weight: 600;
+        }
+        
+        .bg-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .bg-info {
+            background: linear-gradient(135deg, #4da3b9, #3590a5);
+            color: white;
+        }
+        
+        .bg-light {
+            background-color: var(--accent-color);
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-3 {
+            margin-bottom: 18px;
+        }
+        
+        .mt-3 {
+            margin-top: 18px;
+        }
+        
+        .mt-4 {
+            margin-top: 24px;
+        }
+        
+        .mb-1 {
+            margin-bottom: 8px;
+        }
+        
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-img:hover {
+            transform: scale(1.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 12px 5px;
+            text-align: left;
+            border-top: none;
+            vertical-align: top;
+        }
+        
+        table th {
+            width: 35%;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .bg-success {
+            background-color: #2ecc71;
+        }
+        
+        .bg-danger {
+            background-color: #e74c3c;
+        }
+        
+        h4, h5 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-top: 0;
+        }
+        
+        .text-muted {
+            color: var(--text-light);
+        }
+        
+        .info-card {
+            border-left: 4px solid var(--primary-color);
+            background-color: var(--accent-color);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .emergency-card {
+            background-color: #fff8f8;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+            
+            .col-sidebar, .col-main {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/flat_occupant_home/" class="back-button">
+            <span class="back-icon">←</span> Back to Dashboard
+        </a>
+        
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-sidebar">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h4>{{ flat_occupant.full_name }}</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <img src="{% if flat_occupant.id_proof %}{{ flat_occupant.id_proof.url }}{% else %}https://via.placeholder.com/160{% endif %}" class="profile-img">
+                        </div>
+                        <h5>{{ flat_occupant.occupant_type }}</h5>
+                        <p class="mb-1">
+                            🏠 {{ flat_occupant.flat }}
+                        </p>
+                        <p class="text-muted">
+                            Member since {{ flat_occupant.move_in_date|date:"F Y" }}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="card info-card">
+                    <p><strong>Note:</strong> Your profile information is visible to building administration only.</p>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div class="col-main">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h4>Personal Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sidebar">
+                                <h5 class="text-muted mb-3">Basic Details</h5>
+                                <table>
+                                    <tr>
+                                        <th>Full Name:</th>
+                                        <td>{{ flat_occupant.full_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>{{ flat_occupant.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact:</th>
+                                        <td>{{ flat_occupant.contact_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date of Birth:</th>
+                                        <td>{{ flat_occupant.date_of_birth|date:"F d, Y" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gender:</th>
+                                        <td>{{ flat_occupant.gender }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-sidebar">
+                                <h5 class="text-muted mb-3">Flat Details</h5>
+                                <table>
+                                    <tr>
+                                        <th>Flat Number:</th>
+                                        <td>{{ flat_occupant.flat.flat_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Floor:</th>
+                                        <td>{{ flat_occupant.flat.floor }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Block:</th>
+                                        <td>{{ flat_occupant.flat.block|default:"--" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Move In:</th>
+                                        <td>{{ flat_occupant.move_in_date|date:"F d, Y" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Move Out:</th>
+                                        <td>{{ flat_occupant.move_out_date|date:"F d, Y"|default:"Not specified" }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="mt-4">
+                            <h5 class="text-muted mb-3">Emergency Contact</h5>
+                            <div class="emergency-card">
+                                <div class="row">
+                                    <div class="col-sidebar">
+                                        <p><strong>Name:</strong> {{ flat_occupant.emergency_contact_name }}</p>
+                                    </div>
+                                    <div class="col-sidebar">
+                                        <p><strong>Contact:</strong> {{ flat_occupant.emergency_contact_number }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5 class="text-muted mb-3">Account Information</h5>
+                            <table>
+                                <tr>
+                                    <th style="width: 20%">Username:</th>
+                                    <td>{{ flat_occupant.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Account Status:</th>
+                                    <td>
+                                        {% if flat_occupant.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Member Since:</th>
+                                    <td>{{ flat_occupant.created_at|date:"F d, Y" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

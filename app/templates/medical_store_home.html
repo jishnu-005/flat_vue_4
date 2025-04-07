@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Store Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .welcome-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .welcome-section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #34495e;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .card p {
+            color: #7f8c8d;
+        }
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ medical_store.name }} - Dashboard</h1>
+        <a href="/logout/" class="logout-btn">Logout</a>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome, {{ medical_store.owner_name }}</h2>
+            <p>Manage your medical store inventory and services from this dashboard.</p>
+        </div>
+        
+        <div class="dashboard-cards">
+            <a href="/medical_store_add_medicines/" class="card">
+                <div class="card-icon">➕</div>
+                <h3>Add New Medicine</h3>
+                <p>Add new medicines to your inventory</p>
+            </a>
+            
+            <a href="/medical_store_view_medicines/" class="card">
+                <div class="card-icon">💊</div>
+                <h3>View Medicines</h3>
+                <p>View and manage your medicine inventory</p>
+            </a>
+            
+           
+            <a href="/medicalstore_dashboard/" class="card">
+                <div class="card-icon">📦</div>
+                <h3>Orders</h3>
+                <p>View and manage customer orders</p>
+            </a>
+            <a href="/medical_store_profile/" class="card">
+                <div class="card-icon">⚙️</div>
+                <h3>PROFILE</h3>
+                <p>Update your store information</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

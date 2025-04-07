@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAT VUE - Residential Management System</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inter font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">FLAT VUE</div>
+                <nav class="nav-menu">
+
+                    <div class="dropdown">
+                        <a href="" class="login-btn">Login <i class="fas fa-chevron-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="/flat_occupant_login/">Flat Occupant</a>
+                            <a href="/security_login/">Security</a>
+                            <a href="/service_provider_login/">Service Provider</a>
+                            <a href="/medical_store_login/">Medical Store</a>
+                            <a href="/supermarket_login/">Supermarket</a>
+                        </div>
+                    </div>
+                    <a href="/admin_login/">Admin</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Redefining Residential Management</h1>
+            <p>An integrated security system designed for multi-facility residential complexes, combining visitor management, facility control, and emergency services.</p>
+            <a href="#features" class="cta-button">Explore Solution</a>
+        </div>
+    </section>
+    
+    
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo">FLAT VUE</div>
+                    <p class="footer-desc">The next generation residential management system integrating security, convenience, and community services.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 FLAT VUE. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Improved dropdown functionality with click toggle and outside click handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.querySelector('.login-btn');
+            const dropdown = document.querySelector('.dropdown');
+            const dropdownContent = document.querySelector('.dropdown-content');
+        
+            // Toggle dropdown on button click
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdown.classList.toggle('active');
+            });
+        
+            // Close dropdown when clicking outside, but not when clicking inside dropdown
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target) && !loginBtn.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                }
+            });
+        
+            // Prevent dropdown from closing when clicking inside
+            dropdownContent.addEventListener('click', function(e) {
+                e.stopPropagation(); // Stops the event from propagating to document click event
+            });
+        
+            // For desktop users: Keep dropdown open when hovering
+            dropdown.addEventListener('mouseenter', function() {
+                dropdown.classList.add('active');
+            });
+        
+            dropdown.addEventListener('mouseleave', function(e) {
+                if (!dropdown.contains(e.relatedTarget)) {
+                    dropdown.classList.remove('active');
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>

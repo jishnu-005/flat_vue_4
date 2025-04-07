@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Medicines</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .back-btn, .add-btn {
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .back-btn {
+            background-color: #2c3e50;
+        }
+        .back-btn:hover {
+            background-color: #1a252f;
+        }
+        .add-btn {
+            background-color: #27ae60;
+        }
+        .add-btn:hover {
+            background-color: #219653;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .medicines-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .medicines-container h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .medicines-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .medicines-table th, .medicines-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .medicines-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        .medicines-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        .edit-btn {
+            background-color: #f39c12;
+            color: white;
+        }
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .medicine-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .no-medicines {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Medicine Inventory</h1>
+        <div class="header-actions">
+            <a href="/medical_store_home/" class="back-btn">Back to Dashboard</a>
+            <a href="/medical_store_add_medicines/" class="add-btn">Add Medicine</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="medicines-container">
+            <h2>Your Medicines</h2>
+            
+            {% if medicines %}
+            <table class="medicines-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Manufacturer</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Expiry Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medicine in medicines %}
+                    <tr>
+                        <td>
+                            {% if medicine.image %}
+                            <img src="{{ medicine.image.url }}" alt="{{ medicine.name }}" class="medicine-image">
+                            {% else %}
+                            No Image
+                            {% endif %}
+                        </td>
+                        <td>{{ medicine.name }}</td>
+                        <td>{{ medicine.manufacturer }}</td>
+                        <td>₹{{ medicine.price }}</td>
+                        <td>{{ medicine.stock }}</td>
+                        <td>{{ medicine.expiry_date }}</td>
+                        <td>
+                            <a href="/medical_store_edit_medicine/{{ medicine.id }}/" class="action-btn edit-btn">Edit</a>
+                            <a href="/medical_store_delete_medicine/{{ medicine.id }}/" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this medicine?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-medicines">
+                <p>No medicines found in your inventory. Add your first medicine now!</p>
+                <a href="/medical_store_add_medicines/" class="add-btn">Add Medicine</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

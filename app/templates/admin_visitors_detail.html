@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Details</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .visitor-details {
+            padding: 20px;
+        }
+        
+        .detail-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        
+        .detail-label {
+            width: 150px;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-checkedin { background: #cce5ff; color: #004085; }
+        .status-checkedout { background: #e2e3e5; color: #383d41; }
+        
+        .id-proof-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .action-form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+        }
+        
+        .timestamps {
+            font-size: 13px;
+            color: #888;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Visitor Details</h1>
+        </div>
+        
+        <div class="visitor-details">
+            <a href="{% url 'admin_visitor_list' %}" class="back-link">← Back to all visitors</a>
+            
+            <div class="detail-section">
+                <h3 class="section-title">Visitor Information</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Name:</div>
+                    <div class="detail-value">{{ visitor.name }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Phone:</div>
+                    <div class="detail-value">{{ visitor.phone }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Visitor Type:</div>
+                    <div class="detail-value">{{ visitor.get_visitor_type_display }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Purpose:</div>
+                    <div class="detail-value">{{ visitor.purpose|default:"Not specified" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Vehicle Number:</div>
+                    <div class="detail-value">{{ visitor.vehicle_number|default:"Not specified" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Status:</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-{{ visitor.status|lower }}">{{ visitor.get_status_display }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="section-title">Identification</h3>
+                <div class="detail-row">
+                    <div class="detail-label">ID Proof Type:</div>
+                    <div class="detail-value">{{ visitor.id_proof_type|default:"Not provided" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">ID Proof Number:</div>
+                    <div class="detail-value">{{ visitor.id_proof_number|default:"Not provided" }}</div>
+                </div>
+                {% if visitor.id_proof_image %}
+                <div class="detail-row">
+                    <div class="detail-label">ID Proof Image:</div>
+                    <div class="detail-value">
+                        <img src="{{ visitor.id_proof_image.url }}" alt="ID Proof" class="id-proof-image">
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="detail-section">
+                <h3 class="section-title">Visit Details</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Flat:</div>
+                    <div class="detail-value">
+                        {% if visitor.flat %}
+                            {{ visitor.flat.block }} - {{ visitor.flat.floor }} - {{ visitor.flat.flat_number }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Requested By:</div>
+                    <div class="detail-value">
+                        {% if visitor.requested_by %}
+                            {{ visitor.requested_by.full_name }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Expected Arrival:</div>
+                    <div class="detail-value">
+                        {% if visitor.expected_arrival %}
+                            {{ visitor.expected_arrival|date:"M d, Y h:i A" }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Actual Arrival:</div>
+                    <div class="detail-value">
+                        {% if visitor.actual_arrival %}
+                            {{ visitor.actual_arrival|date:"M d, Y h:i A" }}
+                        {% else %}
+                            Not arrived yet
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Actual Departure:</div>
+                    <div class="detail-value">
+                        {% if visitor.actual_departure %}
+                            {{ visitor.actual_departure|date:"M d, Y h:i A" }}
+                        {% else %}
+                            Not departed yet
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Checked In By:</div>
+                    <div class="detail-value">
+                        {% if visitor.checked_in_by %}
+                            {{ visitor.checked_in_by.name }}
+                        {% else %}
+                            Not checked in
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Checked Out By:</div>
+                    <div class="detail-value">
+                        {% if visitor.checked_out_by %}
+                            {{ visitor.checked_out_by.name }}
+                        {% else %}
+                            Not checked out
+                        {% endif %}
+                    </div>
+                </div>
+                {% if visitor.verification_code %}
+                <div class="detail-row">
+                    <div class="detail-label">Verification Code:</div>
+                    <div class="detail-value">{{ visitor.verification_code }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            
+
+            <div class="timestamps">
+                <div class="detail-row">
+                    <div class="detail-label">Created At:</div>
+                    <div class="detail-value">{{ visitor.created_at|date:"M d, Y h:i A" }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Last Updated:</div>
+                    <div class="detail-value">{{ visitor.updated_at|date:"M d, Y h:i A" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

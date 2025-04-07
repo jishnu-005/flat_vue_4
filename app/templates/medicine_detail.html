@@ -1,0 +1,20 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medicine Details</title>
+    <!-- Include your CSS/JS here -->
+</head>
+<body>
+    <h1>{{ medicine.name }}</h1>
+    <p>Price: ₹{{ medicine.price }}</p>
+    <p>Stock: {{ medicine.stock }}</p>
+    
+    <form action="{% url 'add_to_cart' item_type='medicine' item_id=medicine.id %}" method="POST">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" max="{{ medicine.stock }}">
+        <button type="submit">Add to Cart</button>
+    </form>
+</body>
+</html>

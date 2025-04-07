@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities List</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4bb543;
+            --gray-color: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: 1px solid #dee2e6;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .btn-back {
+            background-color: var(--gray-color);
+            color: white;
+            margin-right: 1rem;
+        }
+        
+        .btn-back:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .filter-container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        select {
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-family: inherit;
+            background-color: white;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+        }
+        
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .facility-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .facility-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.2rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .facility-info {
+            margin-bottom: 1.2rem;
+        }
+        
+        .facility-info p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .facility-info p strong {
+            min-width: 80px;
+            display: inline-block;
+            color: var(--gray-color);
+        }
+        
+        .card-footer {
+            padding: 0 1.5rem 1.5rem;
+        }
+        
+        .no-facilities {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-color);
+            grid-column: 1 / -1;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-form {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .facilities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Available Facilities</h1>
+            <div>
+                <a href="{% url 'flat_occupant_home' %}" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="{% url 'my_bookings' %}" class="btn btn-primary">
+                    <i class="fas fa-calendar-check"></i> My Bookings
+                </a>
+            </div>
+        </header>
+        
+        <div class="filter-container">
+            <form method="get" class="filter-form">
+                <label for="type">Filter by Type:</label>
+                <select name="type" id="type">
+                    <option value="">All Facilities</option>
+                    {% for value, label in facility_types %}
+                    <option value="{{ value }}" {% if value == facility_type %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Apply Filter
+                </button>
+            </form>
+        </div>
+        
+        <div class="facilities-grid">
+            {% for facility in facilities %}
+            <div class="facility-card">
+                <div class="card-header">
+                    <h3>{{ facility.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="facility-info">
+                        <p><strong>Type:</strong> {{ facility.get_facility_type_display }}</p>
+                        <p><strong>Location:</strong> {{ facility.location }}</p>
+                        <p><strong>Hours:</strong> {{ facility.opening_time|time:"g:i A" }} - {{ facility.closing_time|time:"g:i A" }}</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'facility_detail' facility.id %}" class="btn btn-primary" style="width: 100%; text-align: center;">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-facilities">
+                <h3>No facilities found</h3>
+                <p>There are currently no facilities matching your criteria.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

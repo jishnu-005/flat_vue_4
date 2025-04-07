@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        .card-title {
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+        .item-image {
+            border-radius: 10px;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4e73df;
+        }
+        .stock-badge {
+            font-size: 0.9rem;
+            padding: 0.5em 0.75em;
+        }
+        .quantity-control {
+            max-width: 200px;
+        }
+        .quantity-control button {
+            width: 40px;
+        }
+        .quantity-input {
+            font-weight: 600;
+            text-align: center;
+        }
+        .btn-add-to-cart {
+            background-color: #4e73df;
+            border-color: #4e73df;
+            padding: 0.5rem 1.5rem;
+        }
+        .btn-add-to-cart:hover {
+            background-color: #3a5ec2;
+            border-color: #3a5ec2;
+        }
+        .btn-back {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <a href="javascript:history.back()" 
+   class="btn btn-outline-secondary btn-back">
+   <i class="fas fa-arrow-left"></i> Back 
+</a>
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Add to Cart</h2>
+                
+                <div class="row">
+                    <div class="col-md-5 mb-4 mb-md-0">
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="img-fluid item-image">
+                    </div>
+                    <div class="col-md-7">
+                        <h3>{{ item.name }}</h3>
+                        <p class="text-muted">
+                            {% if item_type == 'product' %}
+                                {{ item.supermarket.name }}
+                            {% else %}
+                                {{ item.medicalstore.name }}
+                            {% endif %}
+                        </p>
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="price-tag">₹{{ item.price }}</span>
+                            <span class="badge bg-success stock-badge ms-3">In Stock: {{ item.stock }}</span>
+                        </div>
+                        
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group mb-4 quantity-control">
+                                <button class="btn btn-outline-secondary decrement" type="button">-</button>
+                                <input type="number" name="quantity" value="1" min="1" max="{{ item.stock }}" 
+                                       class="form-control text-center quantity-input">
+                                <button class="btn btn-outline-secondary increment" type="button">+</button>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-add-to-cart">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const decrement = document.querySelector('.decrement');
+        const increment = document.querySelector('.increment');
+        const quantityInput = document.querySelector('.quantity-input');
+        
+        decrement.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                quantityInput.value = value - 1;
+            }
+        });
+        
+        increment.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            if (value < {{ item.stock }}) {
+                quantityInput.value = value + 1;
+            }
+        });
+    });
+    </script>
+</body>
+</html>

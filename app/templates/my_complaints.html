@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Complaints</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+            border: 1px solid #2980b9;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-back {
+            background-color: #95a5a6;
+            color: white;
+            border: 1px solid #7f8c8d;
+            margin-right: 10px;
+        }
+        
+        .btn-back:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .complaint {
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 0 4px 4px 0;
+            transition: transform 0.2s;
+        }
+        
+        .complaint:hover {
+            transform: translateX(5px);
+        }
+        
+        .complaint p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+        
+        .pending { background: #FFF3CD; color: #856404; }
+        .resolved { background: #D4EDDA; color: #155724; }
+        .rejected { background: #F8D7DA; color: #721C24; }
+        .in-progress { background: #CCE5FF; color: #004085; }
+        
+        .no-complaints {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .complaint-date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .admin-reply {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .admin-reply strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Complaints</h1>
+        
+        <div class="action-buttons">
+            <a href="{% url 'flat_occupant_home' %}" class="btn btn-back">← Back to Home</a>
+            <a href="{% url 'submit_complaint' %}" class="btn btn-primary">Submit New Complaint</a>
+        </div>
+        
+        {% for complaint in complaints %}
+        <div class="complaint">
+            <div class="complaint-header">
+                <strong>Complaint #{{ forloop.counter }}</strong>
+                <span class="complaint-date">{{ complaint.created_at }}</span>
+            </div>
+            <p>{{ complaint.complaint }}</p>
+            
+            {% if complaint.reply %}
+            <div class="admin-reply">
+                <strong>Admin Reply:</strong>
+                <p>{{ complaint.reply }}</p>
+            </div>
+            {% endif %}
+            
+            <p><strong>Status:</strong> 
+                <span class="status {{ complaint.status|lower }}">{{ complaint.status }}</span>
+            </p>
+        </div>
+        {% empty %}
+        <div class="no-complaints">
+            <p>No complaints submitted yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

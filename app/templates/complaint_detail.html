@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complaint Details</title>
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --primary-dark: #303f9f;
+            --secondary-color: #ff4081;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --light-gray: #f5f7fa;
+            --border-color: #e0e0e0;
+            --text-color: #333;
+            --text-light: #666;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: #f0f2f5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #292929;
+            margin: 0;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(63, 81, 181, 0.2);
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .back-button i {
+            margin-right: 6px;
+        }
+        
+        .complaint-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            margin-right: 8px;
+            color: var(--text-light);
+        }
+        
+        .meta-value {
+            color: var(--text-color);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .complaint-box { 
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .complaint-content {
+            background-color: var(--light-gray);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-new { 
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .status-in-progress { 
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-resolved { 
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+        
+        .response-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+        
+        select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: white;
+            font-size: 15px;
+            min-width: 200px;
+            font-family: inherit;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .resident-tag, .provider-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+        
+        .resident-tag {
+            background-color: rgba(63, 81, 181, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .provider-tag {
+            background-color: rgba(255, 64, 129, 0.1);
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Complaint Details</h1>
+            <a href="{% url 'all_complaints' %}" class="back-button">
+                <i>←</i> Back to All Complaints
+            </a>
+        </div>
+        
+        <div class="complaint-box">
+            <div class="complaint-meta">
+                <div class="meta-item">
+                    <span class="meta-label">From:</span>
+                    <span class="meta-value">
+                        {% if complaint.flat_occupant %}
+                            {{ complaint.flat_occupant.full_name }}
+                            <span class="resident-tag">Resident</span>
+                        {% else %}
+                            {{ complaint.service_provider.name }}
+                            <span class="provider-tag">Service Provider</span>
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="meta-item">
+                    <span class="meta-label">Date:</span>
+                    <span class="meta-value">{{ complaint.created_at }}</span>
+                </div>
+                
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    <span class="status-badge status-{{ complaint.status|lower }}">{{ complaint.status }}</span>
+                </div>
+            </div>
+            
+            <div>
+                <span class="meta-label">Complaint:</span>
+                <div class="complaint-content">{{ complaint.complaint }}</div>
+            </div>
+        </div>
+        
+        <div class="response-form">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">Reply:</label>
+                    <textarea name="reply" placeholder="Enter your response...">{% if complaint.reply %}{{ complaint.reply }}{% endif %}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Status:</label>
+                    <select name="status">
+                        {% for status in complaint.STATUS_CHOICES %}
+                        <option value="{{ status.0 }}" {% if complaint.status == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Response</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

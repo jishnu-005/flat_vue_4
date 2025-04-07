@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Stores | HealthcareHub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --text-color: #5a5c69;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            color: var(--text-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+        }
+        
+        .hover-elevation:hover {
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .page-header {
+            position: relative;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .page-header h1 {
+            font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .filter-card {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .empty-state {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: #dddfeb;
+            margin-bottom: 1rem;
+        }
+        
+        .medical-icon {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="{% url 'flat_occupant_home' %}" class="btn btn-light back-btn rounded-pill shadow-sm">
+        <i class="fas fa-arrow-left me-2"></i> Back to Home
+    </a>
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container text-center">
+            <h1><i class="fas fa-clinic-medical me-3 medical-icon"></i> Our Partner Medical Stores</h1>
+            <p class="lead">Find your medicines and healthcare products from these trusted pharmacies</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Search and Filter Form -->
+        <div class="card shadow-sm mb-4 filter-card">
+            <div class="card-body py-4">
+                <form method="get" class="row g-3 align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" name="query" class="form-control border-start-0" placeholder="Search medical stores..." value="{{ query }}">
+                            <button class="btn btn-primary px-4" type="submit">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="form-check me-3 mb-2 mb-md-0">
+                                <input class="form-check-input" type="checkbox" name="delivery" id="delivery" value="true" {% if is_delivery %}checked{% endif %}>
+                                <label class="form-check-label" for="delivery">
+                                    <i class="fas fa-truck text-success me-1"></i> Delivery
+                                </label>
+                            </div>
+                            <div class="form-check me-3 mb-2 mb-md-0">
+                                <input class="form-check-input" type="checkbox" name="sunday" id="sunday" value="true" {% if is_open_sunday %}checked{% endif %}>
+                                <label class="form-check-label" for="sunday">
+                                    <i class="fas fa-calendar-day text-info me-1"></i> Open Sunday
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary px-4">
+                                <i class="fas fa-filter me-1"></i> Apply
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Medical Stores List -->
+        {% if medical_stores %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for store in medical_stores %}
+            <div class="col">
+                <div class="card h-100 shadow-sm hover-elevation">
+                    <div class="position-relative">
+                        {% if store.image %}
+                        <img src="{{ store.image.url }}" class="card-img-top" alt="{{ store.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'images/default_medicalstore.jpg' %}" class="card-img-top" alt="{{ store.name }}" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        
+                        <!-- Badges -->
+                        <div class="position-absolute top-0 end-0 p-2">
+                            {% if store.delivery_available %}
+                            <span class="badge rounded-pill bg-success me-1">
+                                <i class="fas fa-truck me-1"></i> Delivery
+                            </span>
+                            {% endif %}
+                            {% if store.sunday_available %}
+                            <span class="badge rounded-pill bg-info">
+                                <i class="fas fa-sun me-1"></i> Sunday
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{ store.name }}</h5>
+                        <p class="card-text text-muted mb-2">
+                            <i class="fas fa-map-marker-alt me-1 text-primary"></i> {{ store.location }}
+                        </p>
+                        <p class="card-text mb-3">
+                            <small class="text-muted">
+                                <i class="far fa-clock me-1 text-primary"></i> {{ store.opening_time|time:"g:i A" }} - {{ store.closing_time|time:"g:i A" }}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-user-md me-1 text-primary"></i> {{ store.owner_name }}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 pt-0">
+                        <a href="{% url 'flat_occupant_medicalstore_medicines' store.id %}" class="btn btn-primary w-100 py-2">
+                            <i class="fas fa-pills me-2"></i> Browse Medicines
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state shadow-sm">
+            <i class="fas fa-clinic-medical"></i>
+            <h4 class="mb-3">No Medical Stores Found</h4>
+            <p class="text-muted mb-4">We couldn't find any medical stores matching your criteria. Try adjusting your filters.</p>
+            <a href="{% url 'flat_occupant_medicalstore_list' %}" class="btn btn-primary px-4">
+                <i class="fas fa-undo me-2"></i> Reset Filters
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-white py-4 mt-5 shadow-sm">
+        <div class="container text-center text-muted">
+            <p class="mb-0">&copy; 2023 HealthcareHub. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+{% load order_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Supermarket Orders</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .order-container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .status-badge {
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+        .btn-sm {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+        .alert-warning {
+            text-align: center;
+            font-weight: bold;
+        }
+        .product-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        .btn-pay-all {
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-pay-all:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-summary {
+            background-color: #e7f5ff;
+            border-left: 4px solid #4dabf7;
+        }
+        .transaction-ref {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="order-container mt-4">
+    <h2 class="mb-4 text-center text-primary"><i class="fas fa-shopping-basket"></i> My Supermarket Orders</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if orders %}
+        <!-- Payment Summary for Payable Orders -->
+        {% if payable_orders.exists %}
+        <div class="alert payment-summary mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">Payable Orders Summary</h5>
+                    <p class="mb-0">
+                        <strong>Total Amount:</strong> ₹{{ total_amount|floatformat:2 }}
+                        <span class="badge bg-primary ms-2">{{ payable_orders.count }} order(s)</span>
+                    </p>
+                </div>
+                <form method="post" action="{% url 'process_supermarket_payment' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-pay-all">
+                        <i class="fas fa-credit-card"></i> Pay All Now
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td class="d-flex align-items-center">
+                        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="product-img">
+                        {{ order.product.name }}
+                    </td>
+                    <td>{{ order.quantity }}</td>
+                    <td>₹{{ order.product.price|floatformat:2 }}</td>
+                    <td><strong>₹{{ order.product.price|multiply:order.quantity|floatformat:2 }}</strong></td>
+                    <td>
+                        <span class="status-badge 
+                            {% if order.status == 'Pending' %} bg-warning 
+                            {% elif order.status == 'Accepted' %} bg-info 
+                            {% elif order.status == 'Processing' %} bg-primary 
+                            {% elif order.status == 'Dispatched' %} bg-secondary 
+                            {% elif order.status == 'Out for Delivery' %} bg-success 
+                            {% elif order.status == 'Delivered' %} bg-success 
+                            {% elif order.status == 'Rejected' %} bg-danger {% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if order.payment %}
+                            <span class="badge {% if order.payment.payment_status == 'Completed' %}bg-success{% else %}bg-warning{% endif %}">
+                                {{ order.payment.payment_status }}
+                            </span>
+                            {% if order.payment.payment_status == 'Completed' %}
+                                <div class="transaction-ref">Ref: {{ order.payment.transaction_id }}</div>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge {% if order.status == 'Accepted' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                {% if order.status == 'Accepted' %}Payment Pending{% else %}Not Payable{% endif %}
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> You haven't placed any supermarket orders yet.
+        </div>
+    {% endif %}
+    
+    <div class="text-center mt-4">
+        <a href="" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

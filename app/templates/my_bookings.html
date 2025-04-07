@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .back-btn {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .filter-card {
+            background: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+        .btn {
+            display: inline-block;
+            padding: 5px 10px;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+        .btn-cancel {
+            background: #dc3545;
+        }
+        .btn-checkin {
+            background: #007bff;
+        }
+        .btn-checkout {
+            background: #6c757d;
+        }
+        .no-bookings {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            text-align: center;
+            color: #6c757d;
+        }
+        .text-success {
+            color: #28a745;
+        }
+        .text-warning {
+            color: #ffc107;
+        }
+        .text-muted {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with back button -->
+        <div>
+            <a href="/facilities/" class="back-btn">← Back to Facilities</a>
+            <h2>My Bookings</h2>
+        </div>
+        
+        <!-- Status Filter -->
+        <div class="filter-card">
+            <form method="get">
+                <label for="status">Filter by Status:</label>
+                <select name="status" id="status" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if value == status_filter %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <!-- Bookings Table -->
+        <div>
+            {% if bookings %}
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Facility</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.facility.name }}</td>
+                            <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}</td>
+                            <td>
+                                <span class="status-badge" style="
+                                    {% if booking.status == 'Approved' %}background: #d4edda; color: #155724;
+                                    {% elif booking.status == 'Pending' %}background: #fff3cd; color: #856404;
+                                    {% elif booking.status == 'Rejected' %}background: #f8d7da; color: #721c24;
+                                    {% elif booking.status == 'Cancelled' %}background: #e2e3e5; color: #383d41;
+                                    {% elif booking.status == 'Completed' %}background: #d1ecf1; color: #0c5460;
+                                    {% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if booking.checked_in %}
+                                    <span class="text-success">{{ booking.checked_in_time|time:"H:i" }}</span>
+                                {% else %}
+                                    <span class="text-muted">Not checked in</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if booking.checked_out_time %}
+                                    <span class="text-success">{{ booking.checked_out_time|time:"H:i" }}</span>
+                                {% elif booking.checked_in %}
+                                    <span class="text-warning">Checked in</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if booking.status == 'Pending' %}
+                                    <a href="{% url 'cancel_booking' booking.id %}" 
+                                       onclick="return confirm('Are you sure you want to cancel this booking?')"
+                                       class="btn btn-cancel">
+                                        Cancel
+                                    </a>
+                                
+                                {% elif booking.status == 'Approved' and not booking.checked_in %}
+                                    <a href="{% url 'cancel_booking' booking.id %}" 
+                                       onclick="return confirm('Are you sure you want to cancel this booking?')"
+                                       class="btn btn-cancel">
+                                        Cancel
+                                    </a>
+                                    {% if booking.can_check_in %}
+                                    <a href="{% url 'check_in' booking.id %}" class="btn btn-checkin">
+                                        Check In
+                                    </a>
+                                    {% endif %}
+                                
+                                {% elif booking.checked_in and not booking.checked_out_time %}
+                                    <a href="{% url 'check_out' booking.id %}" class="btn btn-checkout">
+                                        Check Out
+                                    </a>
+                                
+                                {% elif booking.status == 'Completed' %}
+                                    <span class="text-muted">No actions</span>
+                                
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="no-bookings">
+                You don't have any bookings yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Simple script to handle today's date comparison
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const checkInButtons = document.querySelectorAll('.check-in-btn');
+            
+            checkInButtons.forEach(btn => {
+                const bookingDate = btn.dataset.bookingDate;
+                if (bookingDate !== today) {
+                    btn.disabled = true;
+                    btn.style.opacity = "0.6";
+                    btn.style.cursor = "not-allowed";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+/* Global Styles */
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #858796;
+    --success-color: #1cc88a;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --light-color: #f8f9fc;
+    --dark-color: #5a5c69;
+    --border-radius: 0.5rem;
+    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fc;
+    color: #444;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+/* Back Button Styling */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-weight: 500;
+    border: 1px solid #ddd;
+}
+
+.btn-back:hover {
+    background-color: #f0f0f0;
+    transform: translateX(-3px);
+}
+
+.btn-back i {
+    margin-right: 0.5rem;
+}
+
+/* Orders Header */
+.orders-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.orders-header h2 {
+    color: var(--dark-color);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Pay All Section */
+.pay-all-section {
+    background: linear-gradient(to right, #ffffff, #f1f5ff);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--box-shadow);
+    border-left: 5px solid var(--primary-color);
+}
+
+.pay-all-section h5 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.pay-all-total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--dark-color);
+}
+
+.btn-pay {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.btn-pay:hover {
+    background-color: #3a5ccc;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
+}
+
+/* Order Card */
+.order-card {
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.18);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.order-id {
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.order-date {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.order-status {
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+}
+
+.status-pending {
+    background-color: #ffe8cc;
+    color: #ff9500;
+}
+
+.status-processing {
+    background-color: #e0f5ff;
+    color: #0095ff;
+}
+
+.status-shipped {
+    background-color: #d1f7c4;
+    color: #5cb85c;
+}
+
+.status-delivered {
+    background-color: #d4edda;
+    color: #28a745;
+}
+
+.status-cancelled {
+    background-color: #f8d7da;
+    color: #dc3545;
+}
+
+.status-accepted {
+    background-color: #d4edda;
+    color: #28a745;
+}
+
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    border-radius: 50px;
+    font-size: 0.75rem;
+}
+
+/* Order Body */
+.order-body {
+    padding: 1.5rem;
+}
+
+.order-item {
+    display: flex;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.order-item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-right: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.order-item-details {
+    flex: 1;
+}
+
+.order-item-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.order-item-store {
+    color: var(--secondary-color);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.order-item-price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+/* Order Summary */
+.order-summary {
+    background-color: #f8f9fc;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.summary-total {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e3e6f0;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+}
+
+/* Tracking Info */
+.tracking-info {
+    background-color: #f8f9fc;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+.tracking-info h6 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.tracking-info ul li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* Empty Orders */
+.empty-orders {
+    text-align: center;
+    padding: 4rem 1rem;
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #e3e6f0;
+    margin-bottom: 1.5rem;
+}
+
+.empty-orders h3 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.empty-orders .btn {
+    margin-top: 1.5rem;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.empty-orders .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .pay-all-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .pay-all-section > div:last-child {
+        margin-top: 1rem;
+        width: 100%;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .order-header > div:last-child {
+        margin-top: 1rem;
+    }
+    
+    .order-item {
+        flex-direction: column;
+    }
+    
+    .order-item-img {
+        width: 100%;
+        height: 200px;
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.order-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.order-card:nth-child(2) { animation-delay: 0.1s; }
+.order-card:nth-child(3) { animation-delay: 0.2s; }
+.order-card:nth-child(4) { animation-delay: 0.3s; }
+.order-card:nth-child(5) { animation-delay: 0.4s; }   
+ </style>
+</head>
+<body>
+    <div class="container py-4 orders-container">
+        <a href="{% url 'flat_occupant_home' %}" class="btn btn-outline-secondary btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="orders-header">
+            <h2>Your Orders</h2>
+            <p class="text-muted mb-0">View your order history and track current orders</p>
+        </div>
+        
+        {% if orders %}
+            <!-- Pay All Section (only shown if there are payable orders) -->
+            {% if payable_orders %}
+            <div class="pay-all-section">
+                <div>
+                    <h5>Pay All Accepted Orders</h5>
+                    <p class="text-muted mb-0">{{ payable_orders|length }} order(s) ready for payment</p>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="pay-all-total me-3">Total: ₹{{ total_payable_amount|floatformat:2 }}</span>
+                    <button class="btn btn-primary btn-pay" onclick="startRazorpayPayment()">
+                        Pay All Now
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <span class="order-id">Order #{{ order.id }}</span>
+                        <span class="order-date ms-2">{{ order.placed_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="order-status status-{{ order.status|lower }} me-2">
+                            {{ order.get_status_display }}
+                        </span>
+                        {% if order.payment_status == 'Completed' %}
+                            <span class="badge bg-success">Paid</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Payment Pending</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="order-body">
+                    <div class="order-item">
+                        <img src="{% if order.product %}{{ order.product.image.url }}{% else %}{{ order.medicines.image.url }}{% endif %}" 
+                             alt="{% if order.product %}{{ order.product.name }}{% else %}{{ order.medicines.name }}{% endif %}" 
+                             class="order-item-img">
+                        <div class="order-item-details">
+                            <div class="order-item-title">
+                                {% if order.product %}
+                                    {{ order.product.name }}
+                                {% else %}
+                                    {{ order.medicines.name }}
+                                {% endif %}
+                            </div>
+                            <div class="order-item-store">
+                                {% if order.product %}
+                                    {{ order.product.supermarket.name }}
+                                {% else %}
+                                    {{ order.medicines.medicalstore.name }}
+                                {% endif %}
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <span class="text-muted">Qty:</span>
+                                    <span class="ms-2">{{ order.quantity }}</span>
+                                </div>
+                                <div class="order-item-price">
+                                    ₹{{ order.price|floatformat:2 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>₹{{ order.price|floatformat:2 }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Quantity</span>
+                            <span>{{ order.quantity }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery</span>
+                            <span>Free</span>
+                        </div>
+                       
+                    </div>
+
+                    {% if order.estimated_delivery %}
+                    <div class="tracking-info">
+                        <h6>Delivery Information</h6>
+                        <p class="mb-1"><strong>Estimated Delivery:</strong> {{ order.estimated_delivery|date:"M d, Y" }}</p>
+                        {% if order.tracking_history %}
+                            <div class="mt-2">
+                                <h6>Tracking History</h6>
+                                <ul class="list-unstyled">
+                                    {% for status, date in order.tracking_history.items %}
+                                    <li>
+                                        <i class="fas fa-circle text-primary me-2" style="font-size: 0.5rem;"></i>
+                                        {{ status }} - {{ date }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-orders">
+            <div class="empty-icon">
+                <i class="far fa-clipboard"></i>
+            </div>
+            <h3>No Orders Yet</h3>
+            <p class="text-muted">You haven't placed any orders yet</p>
+            <a href="{% url 'flat_occupant_home' %}" class="btn btn-primary">
+                Start Shopping
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    function startRazorpayPayment() {
+        const amount = parseFloat("{{ total_payable_amount }}");
+        const amountInPaise = Math.round(amount * 100);
+        const orderIds = [{% for order in payable_orders %}"{{ order.id }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+        
+        fetch('{% url "create_razorpay_order" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                amount: amount,
+                order_ids: orderIds
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const options = {
+                key: '{{ razorpay_key_id }}',
+                amount: data.amount,
+                currency: 'INR',
+                name: 'Apartment Services',
+                description: 'Payment for {{ payable_orders|length }} order(s)',
+                order_id: data.razorpay_order_id,
+                handler: function(response) {
+                    verifyPayment(response, orderIds);
+                },
+                prefill: {
+                    name: '{{ user.full_name }}',
+                    email: '{{ user.email }}',
+                    contact: '{{ user.contact_number }}'
+                },
+                theme: {
+                    color: '#4e73df'
+                },
+                modal: {
+                    ondismiss: function() {
+                        console.log('Payment dismissed');
+                    }
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.open();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Payment initialization failed. Please try again. Error: ' + error.message);
+        });
+    }
+
+    function verifyPayment(response, orderIds) {
+        fetch('{% url "verify_razorpay_payment" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                order_ids: orderIds
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Verification failed');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Payment successful! Your orders are being processed.');
+                window.location.reload();
+            } else {
+                alert('Payment verification failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Payment verification failed. Please contact support. Error: ' + error.message);
+        });
+    }
+    </script>
+</body>
+</html>

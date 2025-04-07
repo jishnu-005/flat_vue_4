@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Facility: {{ facility.name }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #1cc88a;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .form-header {
+            border-bottom: 1px solid #e3e6f0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.35rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1.5rem;
+        }
+        
+        .btn-outline-secondary {
+            padding: 0.5rem 1.5rem;
+        }
+        
+        .current-image {
+            border: 1px solid #e3e6f0;
+            border-radius: 5px;
+            padding: 5px;
+            margin-top: 10px;
+            max-width: 150px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2 class="h4 text-gray-900 mb-0">
+                            <i class="fas fa-edit me-2"></i>Edit Facility: {{ facility.name }}
+                        </h2>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label required-field">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       value="{{ facility.name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="location" class="form-label required-field">Location</label>
+                                <input type="text" class="form-control" id="location" name="location" 
+                                       value="{{ facility.location }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="3">{{ facility.description }}</textarea>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="opening_time" class="form-label required-field">Opening Time</label>
+                                <input type="time" class="form-control" id="opening_time" name="opening_time" 
+                                       value="{{ facility.opening_time|time:'H:i' }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="closing_time" class="form-label required-field">Closing Time</label>
+                                <input type="time" class="form-control" id="closing_time" name="closing_time" 
+                                       value="{{ facility.closing_time|time:'H:i' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="max_capacity" class="form-label required-field">Max Capacity</label>
+                                <input type="number" class="form-control" id="max_capacity" name="max_capacity" 
+                                       value="{{ facility.max_capacity }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Status</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="is_active" 
+                                           name="is_active" {% if facility.is_active %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_active">
+                                        Active Facility
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="rules" class="form-label">Rules</label>
+                            <textarea class="form-control" id="rules" name="rules" 
+                                      rows="3">{{ facility.rules }}</textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="image" class="form-label">Facility Image</label>
+                            <input type="file" class="form-control" id="image" name="image">
+                            {% if facility.image %}
+                                <div class="mt-2">
+                                    <p class="mb-1">Current Image:</p>
+                                    <img src="{{ facility.image.url }}" class="current-image img-fluid">
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'service_provider_facilities' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Facility
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

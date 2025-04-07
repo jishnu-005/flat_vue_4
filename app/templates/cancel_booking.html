@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cancel Booking</title>
+</head>
+<body>
+    <h1>Cancel Booking</h1>
+    
+    <p>Facility: {{ booking.facility.name }}</p>
+    <p>Date: {{ booking.booking_date }}</p>
+    <p>Time: {{ booking.start_time }} to {{ booking.end_time }}</p>
+    <p>Current Status: {{ booking.get_status_display }}</p>
+    
+    <p>Are you sure you want to cancel this booking?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm Cancellation</button>
+    </form>
+    
+    <a href="{% url 'my_bookings' %}">Back to My Bookings</a>
+</body>
+</html>

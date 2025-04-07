@@ -1,0 +1,101 @@
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Complete Your Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Order Summary</h5>
+                        <ul class="list-group mb-3">
+                            {% for order in orders %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <div>
+                                    <h6 class="my-0">
+                                        {% if order.product %}
+                                            {{ order.product.name }}
+                                        {% else %}
+                                            {{ order.medicines.name }}
+                                        {% endif %}
+                                    </h6>
+                                    <small class="text-muted">Qty: {{ order.quantity }}</small>
+                                </div>
+                                <span class="text-muted">₹{{ order.price }}</span>
+                            </li>
+                            {% endfor %}
+                            <li class="list-group-item d-flex justify-content-between bg-light">
+                                <span>Total (INR)</span>
+                                <strong>₹{{ amount }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <form id="payment-form">
+                        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ razorpay_order_id }}">
+                        <button type="button" id="rzp-button" class="btn btn-primary btn-lg btn-block">
+                            Pay ₹{{ amount }} via Razorpay
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": "{{ amount|floatformat:2 }}00", // amount in paise
+        "currency": "INR",
+        "name": "{{ name }}",
+        "description": "Payment for Order",
+        "image": "{% static 'img/logo.png' %}",
+        "order_id": "{{ razorpay_order_id }}",
+        "handler": function (response) {
+            // Submit form with payment details
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '{% url "payment_success" %}');
+            
+            var fields = {
+                'razorpay_payment_id': response.razorpay_payment_id,
+                'razorpay_order_id': response.razorpay_order_id,
+                'razorpay_signature': response.razorpay_signature,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            };
+            
+            for (var key in fields) {
+                if (fields.hasOwnProperty(key)) {
+                    var hiddenField = document.createElement('input');
+                    hiddenField.setAttribute('type', 'hidden');
+                    hiddenField.setAttribute('name', key);
+                    hiddenField.setAttribute('value', fields[key]);
+                    form.appendChild(hiddenField);
+                }
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
+        },
+        "prefill": {
+            "name": "{{ name }}",
+            "email": "{{ email }}",
+            "contact": "{{ contact }}"
+        },
+        "theme": {
+            "color": "#4e73df"
+        }
+    };
+    
+    var rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    };
+</script>
+{% endblock %}

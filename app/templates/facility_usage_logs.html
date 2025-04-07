@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Usage Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .back-btn {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+        .text-success {
+            color: #28a745;
+        }
+        .text-warning {
+            color: #ffc107;
+        }
+        .text-muted {
+            color: #6c757d;
+        }
+        .no-data {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'service_provider_facility_management' %}" class="back-btn">
+            ← Back to Facility Management
+        </a>
+        <h2>Facility Usage Logs</h2>
+        
+        {% if booking_data %}
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Facility</th>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in booking_data %}
+                    {% with booking=data.booking %}
+                    <tr>
+                        <td>{{ booking.facility.name }}</td>
+                        <td>{{ booking.user.full_name }}</td>
+                        <td>{{ booking.booking_date }}</td>
+                        <td>{{ booking.start_time|time:"H:i" }} - {{ booking.end_time|time:"H:i" }}</td>
+                        <td>
+                            {% if data.duration %}
+                                {{ data.duration }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-badge" style="
+                                {% if booking.status == 'Approved' %}background: #d4edda; color: #155724;
+                                {% elif booking.status == 'Pending' %}background: #fff3cd; color: #856404;
+                                {% elif booking.status == 'Rejected' %}background: #f8d7da; color: #721c24;
+                                {% elif booking.status == 'Cancelled' %}background: #e2e3e5; color: #383d41;
+                                {% elif booking.status == 'Completed' %}background: #d1ecf1; color: #0c5460;
+                                {% endif %}">
+                                {{ booking.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if booking.checked_in %}
+                                <span class="text-success">{{ booking.checked_in_time|time:"H:i" }}</span>
+                            {% else %}
+                                <span class="text-muted">Not checked in</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if booking.checked_out_time %}
+                                <span class="text-success">{{ booking.checked_out_time|time:"H:i" }}</span>
+                            {% elif booking.checked_in %}
+                                <span class="text-warning">Checked in</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-data">
+            No facility usage data available.
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

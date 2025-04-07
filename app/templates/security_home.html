@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #3a5a7d;
+            --secondary-color: #4CAF50;
+            --accent-color: #f7f7f7;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: var(--text-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        
+        .page-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: var(--accent-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .chat-list {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        
+        .chat-list-header {
+            background-color: var(--accent-color);
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 100px;
+            gap: 10px;
+        }
+        
+        .chat-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 100px;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .chat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chat-item:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .occupant-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar-small {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #e8f5e9;
+            color: var(--secondary-color);
+        }
+        
+        .status-closed {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+        
+        .status-pending {
+            background-color: #fff8e1;
+            color: #ff9800;
+        }
+        
+        .action-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background-color: #2c4562;
+        }
+        
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .visitor-section {
+            margin-top: 30px;
+        }
+
+        .visitor-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .visitor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .visitor-list {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .visitor-header {
+            background-color: var(--accent-color);
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .visitor-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .visitor-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visitor-purpose {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-checkedin {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+
+        .tab-container {
+            margin-top: 20px;
+        }
+
+        .tab-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .chat-list-header, .chat-item {
+                grid-template-columns: 2fr 1fr 100px;
+            }
+            
+            .chat-item .location {
+                display: none;
+            }
+            
+            .chat-list-header .location-header {
+                display: none;
+            }
+
+            .visitor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">SecureChat Portal</div>
+            <div class="user-info" data-security-id="{{ security.id }}">
+                <div class="user-avatar">{{ security.name|slice:":1" }}</div>
+                <div>
+                    <div>{{ security.name }}</div>
+                    <div style="font-size: 12px;">Security Officer - {{ security.shift_timing }} Shift</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="/security_home/" class="active">Dashboard</a></li>
+                    <li><a href="/chat/">Chats</a></li>
+                    <li><a href="/security_dashboard/">Visitor Management</a></li>
+                    <!-- <li><a href="#">Chat History</a></li> -->
+                    <li><a href="/logout/">Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <h2 class="page-title">Security Dashboard</h2>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div>Active Chats</div>
+                        <div class="stat-value">{{ active_chats_count }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Pending Visitors</div>
+                        <div class="stat-value">{{ pending_visitors_count }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Today's Check-ins</div>
+                        <div class="stat-value">{{ todays_checkins_count }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Total Occupants</div>
+                        <div class="stat-value">{{ total_occupants_count }}</div>
+                    </div>
+                </div>
+
+                <div class="tab-container">
+                    <div class="tab-header">
+                        <div class="tab active" onclick="openTab(event, 'chats-tab')">Recent Chats</div>
+                        <div class="tab" onclick="openTab(event, 'visitors-tab')">Pending Visitors</div>
+                    </div>
+
+                    <div id="chats-tab" class="tab-content active">
+                        <div class="search-bar">
+                            <input type="text" id="chatSearch" placeholder="Search occupants...">
+                            <div class="search-icon">🔍</div>
+                        </div>
+                        
+                        <div class="chat-list">
+                            <div class="chat-list-header">
+                                <div>Occupant</div>
+                                <div class="location-header">Location</div>
+                                <div>Status</div>
+                            </div>
+                            
+                            {% for chat in recent_chats %}
+                            <div class="chat-item" data-occupant-id="{{ chat.occupant.id }}">
+                                <div class="occupant-info">
+                                    <div class="avatar-small">{{ chat.occupant.full_name|slice:":1" }}</div>
+                                    <div>
+                                        <div>{{ chat.occupant.full_name }}</div>
+                                        <div style="font-size: 12px;">Last message: {{ chat.last_message_time|timesince }} ago</div>
+                                    </div>
+                                </div>
+                                <div class="location">{{ chat.occupant.flat }}</div>
+                                <div>
+                                    <span class="status {% if chat.has_unread %}status-pending{% else %}status-active{% endif %}">
+                                        {% if chat.has_unread %}Pending{% else %}Active{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="chat-item">
+                                <div colspan="4" style="text-align: center; grid-column: span 4;">No active chats found.</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div id="visitors-tab" class="tab-content">
+                        <div class="visitor-grid">
+                            <div>
+                                <h3>Pending Approvals</h3>
+                                <div class="visitor-list">
+                                    <div class="visitor-header">Expected Visitors</div>
+                                    
+                                    {% for visitor in pending_visitors %}
+                                    <div class="visitor-item">
+                                        <div class="visitor-info">
+                                            <div>{{ visitor.name }}</div>
+                                            <div class="visitor-purpose">{{ visitor.purpose }} - For {{ visitor.flat }}</div>
+                                        </div>
+                                        <div>
+                                            <button class="action-btn" onclick="approveVisitor({{ visitor.id }})">Approve</button>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="visitor-item">
+                                        <div>No pending visitors</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Recent Check-ins</h3>
+                                <div class="visitor-list">
+                                    <div class="visitor-header">Today's Visitors</div>
+                                    
+                                    {% for visitor in checked_in_visitors %}
+                                    <div class="visitor-item">
+                                        <div class="visitor-info">
+                                            <div>{{ visitor.name }}</div>
+                                            <div class="visitor-purpose">{{ visitor.purpose }} - {{ visitor.actual_arrival|time }}</div>
+                                        </div>
+                                        <div>
+                                            <span class="status status-checkedin">Checked In</span>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="visitor-item">
+                                        <div>No checked-in visitors today</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].className = tabcontent[i].className.replace(" active", "");
+            }
+            
+            // Deactivate all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab and add "active" class to the button that opened the tab
+            document.getElementById(tabName).className += " active";
+            evt.currentTarget.className += " active";
+        }
+
+        // Chat buttons
+        document.querySelectorAll('.action-btn').forEach(button => {
+            if (button.textContent === 'Chat') {
+                button.addEventListener('click', function() {
+                    const occupantId = this.closest('.chat-item').dataset.occupantId;
+                    const securityId = document.querySelector('.user-info').dataset.securityId;
+                    
+                    // Redirect to chat page
+                    window.location.href = `/chat/${occupantId}/${securityId}/`;
+                });
+            }
+        });
+        
+        // Search functionality for chats
+        const searchInput = document.querySelector('#chatSearch');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.chat-item').forEach(item => {
+                if (!item.querySelector('.occupant-info')) return;
+                
+                const occupantName = item.querySelector('.occupant-info div div:first-child').textContent.toLowerCase();
+                const location = item.querySelector('.location')?.textContent.toLowerCase() || '';
+                
+                if (occupantName.includes(searchTerm) || location.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Function to approve visitor
+        function approveVisitor(visitorId) {
+            // Ajax call to approve visitor
+            fetch(`/approve_visitor/${visitorId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove visitor from list or update status
+                    const visitorElement = document.querySelector(`.visitor-item button[onclick="approveVisitor(${visitorId})"]`).closest('.visitor-item');
+                    visitorElement.remove();
+                    
+                    // Update pending visitor count
+                    const pendingVisitorsElement = document.querySelector('.stat-card:nth-child(2) .stat-value');
+                    pendingVisitorsElement.textContent = parseInt(pendingVisitorsElement.textContent) - 1;
+                } else {
+                    alert('Failed to approve visitor: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while approving the visitor');
+            });
+        }
+
+        // Function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flat Occupant Management</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #ff4081;
+            --dark-color: #303030;
+            --light-color: #f5f5f5;
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 30px;
+            border: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(to right, var(--primary-color), #5c6bc0);
+            color: white;
+            border-bottom: none;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table th {
+            background-color: var(--dark-color);
+            color: white;
+            font-weight: 500;
+            border: none;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .table td, .table th {
+            vertical-align: middle;
+            padding: 12px 15px;
+        }
+        
+        .btn {
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #303f9f;
+            border-color: #303f9f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-info {
+            background-color: #2196F3;
+            border-color: #2196F3;
+        }
+        
+        .btn-info:hover {
+            background-color: #1976D2;
+            border-color: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+        }
+        
+        .action-btn {
+            width: 85px;
+            margin: 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn i {
+            margin-right: 5px;
+        }
+        
+        .badge {
+            padding: 0.5em 0.75em;
+            font-weight: 500;
+            border-radius: 30px;
+        }
+        
+        .badge-owner {
+            background: linear-gradient(to right, #3f51b5, #5c6bc0);
+            color: white;
+        }
+        
+        .badge-tenant {
+            background: linear-gradient(to right, #ff9800, #fb8c00);
+            color: white;
+        }
+        
+        .navbar {
+            background: linear-gradient(to right, #3c0f78, #4361ee);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-btn {
+            color: white;
+            font-size: 1.25rem;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            margin-right: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .back-btn:hover {
+            transform: translateX(-5px);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white !important;
+        }
+        
+        .add-btn {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            margin-left: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-2px);
+            background-color: #388e3c;
+            border-color: #388e3c;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-active {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            color: #9e9e9e;
+            font-weight: 600;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            min-height: 300px;
+        }
+        
+        /* Detail view styling */
+        .detail-modal .modal-dialog {
+            max-width: 800px;
+        }
+        
+        .detail-modal .modal-content {
+            border-radius: 10px;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .detail-modal .modal-header {
+            background: linear-gradient(to right, var(--primary-color), #5c6bc0);
+            color: white;
+            border-bottom: none;
+            padding: 1.2rem;
+        }
+        
+        .detail-modal .modal-title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .detail-modal .modal-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .detail-modal .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .detail-section-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-section-title i {
+            margin-right: 8px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            width: 200px;
+            color: #555;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .id-proof-preview {
+            max-width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        
+        .occupant-type-owner {
+            background: linear-gradient(to right, #3f51b5, #5c6bc0);
+            padding: 10px 15px;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .occupant-type-tenant {
+            background: linear-gradient(to right, #ff9800, #fb8c00);
+            padding: 10px 15px;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <nav class="navbar">
+        <a href="/admin_home/" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            <i class="fas fa-users mr-2"></i>
+                            Flat Occupant Management
+                        </h4>
+                        <div class="header-actions">
+                            <a href="{% url 'admin_add_flat_occupant' %}" class="btn btn-success add-btn">
+                                <i class="fas fa-plus mr-1"></i> Add Occupant
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                            <div class="row">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Flat</th>
+                                        <th>Type</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for occupant in occupants %}
+                                    <tr>
+                                        <td>{{ occupant.full_name }}</td>
+                                        <td>{{ occupant.flat.flat_number }} ({{ occupant.flat.block }})</td>
+                                        <td>
+                                            <span class="badge badge-{{ occupant.occupant_type|lower }}">
+                                                {{ occupant.occupant_type }}
+                                            </span>
+                                        </td>
+                                        <td>{{ occupant.contact_number }}</td>
+                                        <td>
+                                            {% if occupant.is_active %}
+                                                <span class="status-active">Active</span>
+                                            {% else %}
+                                                <span class="status-inactive">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm action-btn" data-toggle="modal" data-target="#detailModal{{ occupant.id }}">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm action-btn" data-toggle="modal" data-target="#editModal{{ occupant.id }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm action-btn" data-toggle="modal" data-target="#deleteModal{{ occupant.id }}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detail Modals -->
+    {% for occupant in occupants %}
+    <div class="modal fade detail-modal" id="detailModal{{ occupant.id }}" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel{{ occupant.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel{{ occupant.id }}">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        {{ occupant.full_name }} - Complete Profile
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fas fa-id-card"></i> Personal Information
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Full Name:</div>
+                                    <div class="detail-value">{{ occupant.full_name }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Date of Birth:</div>
+                                    <div class="detail-value">{{ occupant.date_of_birth|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Gender:</div>
+                                    <div class="detail-value">{{ occupant.gender }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Occupant Type:</div>
+                                    <div class="detail-value">
+                                        <div class="occupant-type-{{ occupant.occupant_type|lower }}">
+                                            <i class="fas fa-{% if occupant.occupant_type == 'Owner' %}home{% else %}key{% endif %}"></i>
+                                            {{ occupant.occupant_type }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Account Status:</div>
+                                    <div class="detail-value">
+                                        {% if occupant.is_active %}
+                                            <span class="status-active"><i class="fas fa-check-circle"></i> Active</span>
+                                        {% else %}
+                                            <span class="status-inactive"><i class="fas fa-times-circle"></i> Inactive</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fas fa-home"></i> Flat Information
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Flat Number:</div>
+                                    <div class="detail-value">{{ occupant.flat.flat_number }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Block Number:</div>
+                                    <div class="detail-value">{{ occupant.flat.block }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Move In Date:</div>
+                                    <div class="detail-value">{{ occupant.move_in_date|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Move Out Date:</div>
+                                    <div class="detail-value">
+                                        {% if occupant.move_out_date %}
+                                            {{ occupant.move_out_date|date:"M d, Y" }}
+                                        {% else %}
+                                            <span class="text-muted">Not specified</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fas fa-address-card"></i> Contact Information
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Phone Number:</div>
+                                    <div class="detail-value">{{ occupant.contact_number }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Email Address:</div>
+                                    <div class="detail-value">{{ occupant.email }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Emergency Contact:</div>
+                                    <div class="detail-value">{{ occupant.emergency_contact_name }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Emergency Number:</div>
+                                    <div class="detail-value">{{ occupant.emergency_contact_number }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fas fa-user-lock"></i> Account Information
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="detail-label">Username:</div>
+                                    <div class="detail-value">{{ occupant.username }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if occupant.id_proof %}
+                    <div class="detail-section">
+                        <div class="detail-section-title">
+                            <i class="fas fa-file-alt"></i> Identification Documents
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">ID Proof:</div>
+                            <div class="detail-value">
+                                <a href="{{ occupant.id_proof.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt"></i> View Document
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ occupant.id }}" data-dismiss="modal">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Modals -->
+    <div class="modal fade" id="editModal{{ occupant.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ occupant.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel{{ occupant.id }}">
+                        <i class="fas fa-user-edit mr-2"></i>
+                        Edit Occupant - {{ occupant.full_name }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'admin_edit_flat_occupant' occupant.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Flat</label>
+                                    <select name="flat" class="form-control" required>
+                                        {% for flat in flats %}
+                                        <option value="{{ flat.id }}" {% if occupant.flat.id == flat.id %}selected{% endif %}>
+                                            {{ flat.flat_number }} - {{ flat.block }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" name="full_name" value="{{ occupant.full_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Contact Number</label>
+                                    <input type="text" class="form-control" name="contact_number" value="{{ occupant.contact_number }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="email" value="{{ occupant.email }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" class="form-control" name="username" value="{{ occupant.username }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Password (Leave empty to keep current)</label>
+                                    <input type="password" class="form-control" name="password">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Date of Birth</label>
+                                    <input type="date" class="form-control" name="date_of_birth" value="{{ occupant.date_of_birth|date:'Y-m-d' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Gender</label>
+                                    <select class="form-control" name="gender" required>
+                                        <option value="Male" {% if occupant.gender == 'Male' %}selected{% endif %}>Male</option>
+                                        <option value="Female" {% if occupant.gender == 'Female' %}selected{% endif %}>Female</option>
+                                        <option value="Other" {% if occupant.gender == 'Other' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Occupant Type</label>
+                                    <select class="form-control" name="occupant_type" required>
+                                        <option value="Owner" {% if occupant.occupant_type == 'Owner' %}selected{% endif %}>Owner</option>
+                                        <option value="Tenant" {% if occupant.occupant_type == 'Tenant' %}selected{% endif %}>Tenant</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Move In Date</label>
+                                    <input type="date" class="form-control" name="move_in_date" value="{{ occupant.move_in_date|date:'Y-m-d' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Move Out Date (for tenants)</label>
+                                    <input type="date" class="form-control" name="move_out_date" value="{{ occupant.move_out_date|date:'Y-m-d' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Emergency Contact Name</label>
+                                    <input type="text" class="form-control" name="emergency_contact_name" value="{{ occupant.emergency_contact_name }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Emergency Contact Number</label>
+                                    <input type="text" class="form-control" name="emergency_contact_number" value="{{ occupant.emergency_contact_number }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ID Proof</label>
+                            <input type="file" class="form-control-file" name="id_proof">
+                            {% if occupant.id_proof %}
+                                <small class="form-text text-muted">Current: <a href="{{ occupant.id_proof.url }}" target="_blank">View ID Proof</a></small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-1"></i> Save changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ occupant.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ occupant.id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ occupant.id }}">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong>{{ occupant.full_name }}</strong>?</p>
+                    <p class="text-danger">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{% url 'admin_delete_flat_occupant' occupant.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash mr-1"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    
+    <!-- Custom Script -->
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable with minimal features
+            $('table').DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                "paging": false,        // Disable pagination
+                "ordering": false,      // Disable sorting/ordering
+                "info": false,          // Disable info display
+                "language": {
+                    "search": "<i class='fas fa-search'></i> Search:"
+                }
+            });
+            
+            // Adding smooth hover effects on table rows
+            $('tbody tr').hover(
+                function() { $(this).css('background-color', 'rgba(63, 81, 181, 0.05)'); },
+                function() { $(this).css('background-color', ''); }
+            );
+        });
+    </script>
+</body>
+</html>

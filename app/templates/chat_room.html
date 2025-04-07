@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            background-color: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .sidebar h4 {
+            color: white;
+            padding: 0 20px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-link {
+            color: #b8c7ce;
+            margin: 5px 10px;
+            border-radius: 5px;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: #3a5169;
+            color: white;
+        }
+        
+        /* Main content area */
+        .chat-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f5f7fb;
+        }
+        
+        /* Message bubbles */
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message.sent {
+            align-items: flex-end;
+        }
+        
+        .message.received {
+            align-items: flex-start;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .sent .message-bubble {
+            background-color: #4361ee;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .received .message-bubble {
+            background-color: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            margin-top: 5px;
+            color: #7b8a8b;
+        }
+        
+        .sent .message-time {
+            text-align: right;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Input area */
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: white;
+        }
+        
+        /* Scrollbar styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        /* Attachment styling */
+        .attachment {
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .attachment a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        /* Empty state */
+        .empty-chat {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #7b8a8b;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                height: auto;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <h4 class="mb-4">Chat</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'chat_list' %}">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Chats
+                        </a>
+                    </li>
+                    {% if user_type == 'occupant' %}
+                    <li class="nav-item">
+                        <a href="{% url 'flat_occupant_home' %}" class="nav-link">
+                            <i class="fas fa-home me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'security_home' %}" class="nav-link">
+                            <i class="fas fa-home me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 p-0">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h5 class="mb-0">
+                            Chat with 
+                            {% if user_type == 'occupant' %}
+                                {{ other_user.name }} (Security)
+                            {% else %}
+                                {{ other_user.full_name }} (Flat {{ other_user.flat.flat_number }})
+                            {% endif %}
+                        </h5>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        {% if messages %}
+                            <!-- Changed from dictsort:"created_at" to order_by from the view -->
+                            {% for message in messages %}
+                            <div class="message {% if message.sender_type.lower == user_type %}sent{% else %}received{% endif %}">
+                                <div class="message-bubble">
+                                    {% if message.sender_type.lower != user_type %}
+                                        <div class="fw-bold mb-1">
+                                            {% if user_type == 'occupant' %}
+                                                {{ other_user.name }}
+                                            {% else %}
+                                                {{ other_user.full_name }}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if message.content %}
+                                        <div class="message-content">{{ message.content }}</div>
+                                    {% endif %}
+                                    
+                                    {% if message.attachment %}
+                                        <div class="attachment mt-2">
+                                            <a href="{{ message.attachment.url }}" target="_blank">
+                                                <i class="fas fa-paperclip me-1"></i>
+                                                {{ message.attachment.name|slice:"15:" }}
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="message-time">
+                                        {{ message.created_at|time }}
+                                        {% if message.sender_type.lower == user_type %}
+                                            <i class="fas fa-check ms-1"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-chat">
+                                <i class="fas fa-comments fa-3x mb-3"></i>
+                                <p>No messages yet. Start the conversation!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="chat-input">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" name="content" class="form-control" placeholder="Type your message..." required>
+                                <label class="input-group-text">
+                                    <i class="fas fa-paperclip"></i>
+                                    <input type="file" name="attachment" class="d-none">
+                                </label>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-scroll to bottom of chat
+        window.onload = function() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+        
+        // Show selected file name
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
+            console.log('Selected file:', fileName);
+            // In a real implementation, you'd display this to the user
+        });
+    </script>
+</body>
+</html>

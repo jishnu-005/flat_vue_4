@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complaints Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --primary-dark: #303f9f;
+            --secondary-color: #ff4081;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --light-gray: #f5f7fa;
+            --border-color: #e0e0e0;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f0f2f5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 0 15px;
+        }
+        
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #292929;
+            margin: 0;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            padding: 18px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 10px 0 0;
+        }
+        
+        .stat-new .number { color: var(--danger-color); }
+        .stat-progress .number { color: var(--warning-color); }
+        .stat-resolved .number { color: var(--success-color); }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(63, 81, 181, 0.2);
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .back-button i {
+            margin-right: 6px;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background-color: #f8f9fa;
+        }
+        
+        th, td { 
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left; 
+        }
+        
+        th { 
+            font-weight: 600;
+            color: #444;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background-color: rgba(0,0,0,0.01);
+        }
+        
+        .unread { 
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .unread td:first-child::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--secondary-color);
+        }
+        
+        .view-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: var(--success-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .view-link:hover {
+            background-color: #3d8b40;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-new { 
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .status-in-progress { 
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-resolved { 
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+        
+        .search-filter {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        
+        .search-filter input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+        }
+        
+        .search-filter select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: white;
+            font-size: 15px;
+        }
+        
+        .date-cell {
+            white-space: nowrap;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .pagination a {
+            display: inline-block;
+            padding: 8px 14px;
+            margin: 0 5px;
+            border-radius: 4px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .pagination a:hover,
+        .pagination a.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Complaints Dashboard</h1>
+            <a href="{% url 'admin_home' %}" class="back-button">
+                <i>←</i> Back to Admin Home
+            </a>
+        </div>
+        
+        <div class="dashboard-stats">
+            <div class="stat-card stat-new">
+                <h3>New</h3>
+                <p class="number" id="new-count">0</p>
+            </div>
+            
+            <div class="stat-card stat-progress">
+                <h3>In Progress</h3>
+                <p class="number" id="in-progress-count">0</p>
+            </div>
+            
+            <div class="stat-card stat-resolved">
+                <h3>Resolved</h3>
+                <p class="number" id="resolved-count">0</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Total</h3>
+                <p class="number" id="total-count">0</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="search-filter">
+                <input type="text" placeholder="Search complaints..." id="search-input">
+                <select id="status-filter">
+                    <option value="">All Statuses</option>
+                    <option value="new">New</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+                <select id="source-filter">
+                    <option value="">All Sources</option>
+                    <option value="resident">Residents</option>
+                    <option value="provider">Service Providers</option>
+                </select>
+            </div>
+            
+            <table id="complaints-table">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr class="{% if not complaint.is_read_by_admin %}unread{% endif %}">
+                        <td>
+                            {% if complaint.flat_occupant %}
+                                {{ complaint.flat_occupant.full_name }} <span style="color:#666">(Resident)</span>
+                            {% else %}
+                                {{ complaint.service_provider.name }} <span style="color:#666">(Service Provider)</span>
+                            {% endif %}
+                        </td>
+                        <td class="date-cell">{{ complaint.created_at }}</td>
+                        <td>
+                            <span class="status status-{{ complaint.status|lower }}">{{ complaint.status }}</span>
+                        </td>
+                        <td><a href="{% url 'complaint_detail' complaint.id %}" class="view-link">View/Respond</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 30px;">No complaints found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to count complaints by status
+            function countComplaints() {
+                const table = document.getElementById('complaints-table');
+                const rows = table.querySelectorAll('tbody tr');
+                
+                let newCount = 0;
+                let inProgressCount = 0;
+                let resolvedCount = 0;
+                
+                rows.forEach(row => {
+                    // Skip the "No complaints found" row
+                    if (row.querySelector('td[colspan="4"]')) {
+                        return;
+                    }
+                    
+                    const statusCell = row.querySelector('td:nth-child(3) span');
+                    if (!statusCell) return;
+                    
+                    const status = statusCell.textContent.trim().toLowerCase();
+                    
+                    if (status === 'new') {
+                        newCount++;
+                    } else if (status === 'in progress') {
+                        inProgressCount++;
+                    } else if (status === 'resolved') {
+                        resolvedCount++;
+                    }
+                });
+                
+                // Update the count displays
+                document.getElementById('new-count').textContent = newCount;
+                document.getElementById('in-progress-count').textContent = inProgressCount;
+                document.getElementById('resolved-count').textContent = resolvedCount;
+                document.getElementById('total-count').textContent = newCount + inProgressCount + resolvedCount;
+            }
+            
+            // Count complaints on page load
+            countComplaints();
+            
+            // Setup event listeners for filters
+            const searchInput = document.getElementById('search-input');
+            const statusFilter = document.getElementById('status-filter');
+            const sourceFilter = document.getElementById('source-filter');
+            
+            function applyFilters() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusValue = statusFilter.value.toLowerCase();
+                const sourceValue = sourceFilter.value.toLowerCase();
+                
+                const table = document.getElementById('complaints-table');
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    // Skip the "No complaints found" row
+                    if (row.querySelector('td[colspan="4"]')) {
+                        return;
+                    }
+                    
+                    const fromCell = row.querySelector('td:first-child').textContent.toLowerCase();
+                    const statusCell = row.querySelector('td:nth-child(3) span');
+                    let status = '';
+                    
+                    if (statusCell) {
+                        status = statusCell.textContent.trim().toLowerCase();
+                    }
+                    
+                    // Check if the row matches all filters
+                    const matchesSearch = fromCell.includes(searchTerm);
+                    const matchesStatus = !statusValue || status === statusValue;
+                    const matchesSource = !sourceValue || 
+                                         (sourceValue === 'resident' && fromCell.includes('resident')) ||
+                                         (sourceValue === 'provider' && fromCell.includes('service provider'));
+                    
+                    // Show or hide the row based on filter match
+                    if (matchesSearch && matchesStatus && matchesSource) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Recount visible complaints
+                countVisibleComplaints();
+            }
+            
+            function countVisibleComplaints() {
+                const table = document.getElementById('complaints-table');
+                const rows = table.querySelectorAll('tbody tr');
+                
+                let newCount = 0;
+                let inProgressCount = 0;
+                let resolvedCount = 0;
+                
+                rows.forEach(row => {
+                    // Skip hidden rows or "No complaints found" row
+                    if (row.style.display === 'none' || row.querySelector('td[colspan="4"]')) {
+                        return;
+                    }
+                    
+                    const statusCell = row.querySelector('td:nth-child(3) span');
+                    if (!statusCell) return;
+                    
+                    const status = statusCell.textContent.trim().toLowerCase();
+                    
+                    if (status === 'new') {
+                        newCount++;
+                    } else if (status === 'in progress') {
+                        inProgressCount++;
+                    } else if (status === 'resolved') {
+                        resolvedCount++;
+                    }
+                });
+                
+                // Update the count displays
+                document.getElementById('new-count').textContent = newCount;
+                document.getElementById('in-progress-count').textContent = inProgressCount;
+                document.getElementById('resolved-count').textContent = resolvedCount;
+                document.getElementById('total-count').textContent = newCount + inProgressCount + resolvedCount;
+            }
+            
+            // Add event listeners
+            searchInput.addEventListener('input', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            sourceFilter.addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html>

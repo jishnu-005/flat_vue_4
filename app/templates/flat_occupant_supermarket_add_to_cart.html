@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Cart</title>
+    <style>
+        .container {
+            width: 70%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        .product-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: left;
+        }
+        input, select, textarea {
+            padding: 8px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .feedback-section {
+            margin-top: 30px;
+        }
+        .feedback {
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="product-details">
+        <h2>Add to Cart</h2>
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <p><strong>Price:</strong> ₹{{ product.price }}</p>
+        <p><strong>Stock:</strong> {{ product.stock }}</p>
+    </div>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        
+        <label for="quantity"><strong>Quantity</strong></label>
+        <input type="number" name="quantity" id="quantity" min="1" max="{{ product.stock }}" value="1">
+
+        {% if product.is_customizable %}
+            <h4>Customization Options</h4>
+            {% for option, choices in product.customization_details.items %}
+                <label for="{{ option }}">{{ option }}</label>
+                <select name="customization_{{ option }}" id="{{ option }}">
+                    {% for choice in choices %}
+                        <option value="{{ choice }}">{{ choice }}</option>
+                    {% endfor %}
+                </select>
+            {% endfor %}
+        {% endif %}
+
+        <button type="submit">Add to Cart</button>
+    </form>
+
+    <br>
+    <a href="">Back to Shop</a>
+
+    <!-- Feedback Section -->
+    <!-- <div class="feedback-section">
+        <h3>Customer Feedback</h3>
+
+        {% if feedbacks %}
+            {% for feedback in feedbacks %}
+                <div class="feedback">
+                    <p><strong>{{ feedback.user.username }}</strong> - {{ feedback.rating }}/5 ⭐</p>
+                    <p>{{ feedback.comment }}</p>
+                    <p><small>Reviewed on {{ feedback.created_at }}</small></p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet. Be the first to leave a review!</p>
+        {% endif %}
+    </div>
+
+</div> -->
+
+</body>
+</html>
