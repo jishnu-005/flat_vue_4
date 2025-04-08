@@ -10,14 +10,11 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
         }
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
-            max-width: 600px;
-            margin: 0 auto;
         }
         .card-header {
             background-color: #3498db;
@@ -33,53 +30,119 @@
         }
         .sidebar {
             background-color: #2c3e50;
-            min-height: 100vh;
             color: white;
-            padding: 20px;
+            min-height: 100%;
+        }
+        .sidebar-content {
+            position: sticky;
+            top: 0;
         }
         .nav-link {
             color: rgba(255, 255, 255, 0.8);
         }
-        .nav-link:hover {
+        .nav-link:hover, .nav-link.active {
             color: white;
             background-color: #3498db;
+        }
+        .offcanvas {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .info-card {
+            height: 100%;
+        }
+        @media (max-width: 767.98px) {
+            .desktop-sidebar {
+                display: none;
+            }
+            .visitor-img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+        @media (min-width: 768px) {
+            .mobile-nav {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 sidebar">
-                <h4 class="mb-4">Security Dashboard</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'security_dashboard' %}">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'handle_unexpected_visitor' %}">
-                            <i class="fas fa-user-plus me-2"></i> Unexpected
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'check_in_visitor' %}">
-                            <i class="fas fa-sign-in-alt me-2"></i> Check In
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="{% url 'logout' %}">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                        </a>
-                    </li>
-                </ul>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Desktop Sidebar -->
+            <div class="col-md-3 col-lg-2 desktop-sidebar sidebar d-md-block">
+                <div class="sidebar-content p-3 py-4">
+                    <h4 class="mb-4">Security Dashboard</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'security_dashboard' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'handle_unexpected_visitor' %}">
+                                <i class="fas fa-user-plus me-2"></i> Unexpected
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'check_in_visitor' %}">
+                                <i class="fas fa-sign-in-alt me-2"></i> Check In
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-danger rounded" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Bar -->
+            <div class="mobile-nav col-12 bg-dark text-white p-3 d-flex justify-content-between align-items-center d-md-none">
+                <h4 class="m-0">Security Dashboard</h4>
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Offcanvas Sidebar for Mobile -->
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Security Dashboard</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'security_dashboard' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'handle_unexpected_visitor' %}">
+                                <i class="fas fa-user-plus me-2"></i> Unexpected
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'check_in_visitor' %}">
+                                <i class="fas fa-sign-in-alt me-2"></i> Check In
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-danger rounded" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Check Out Visitor</h2>
+            <div class="col-md-9 col-lg-10 px-3 px-md-4 py-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+                    <h2 class="mb-3 mb-md-0">Check Out Visitor</h2>
                     <a href="{% url 'security_dashboard' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
                     </a>
@@ -94,9 +157,9 @@
                     {% endfor %}
                 {% endif %}
 
-                <div class="card">
+                <div class="card mx-auto" style="max-width: 600px;">
                     <div class="card-header">
-                        <h5>Confirm Check Out</h5>
+                        <h5 class="mb-0">Confirm Check Out</h5>
                     </div>
                     <div class="card-body text-center">
                         <img src="https://ui-avatars.com/api/?name={{ visitor.name }}&background=3498db&color=fff&size=150" 
@@ -104,20 +167,20 @@
                         <h4>{{ visitor.name }}</h4>
                         <p class="text-muted mb-4">Visiting {{ visitor.flat }}</p>
                         
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="card">
+                        <div class="row row-cols-1 row-cols-sm-2 g-3 mb-4">
+                            <div class="col">
+                                <div class="card info-card">
                                     <div class="card-body">
                                         <h6><i class="fas fa-phone me-2"></i> Phone</h6>
-                                        <p>{{ visitor.phone }}</p>
+                                        <p class="mb-0">{{ visitor.phone }}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="card">
+                            <div class="col">
+                                <div class="card info-card">
                                     <div class="card-body">
                                         <h6><i class="fas fa-clock me-2"></i> Checked In</h6>
-                                        <p>{{ visitor.actual_arrival|date:"M d, H:i" }}</p>
+                                        <p class="mb-0">{{ visitor.actual_arrival|date:"M d, H:i" }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +188,7 @@
                         
                         <form method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger px-4">
+                            <button type="submit" class="btn btn-danger px-4 py-2">
                                 <i class="fas fa-sign-out-alt me-2"></i> Confirm Check Out
                             </button>
                         </form>

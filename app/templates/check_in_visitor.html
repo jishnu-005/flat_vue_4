@@ -10,14 +10,11 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
         }
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
-            max-width: 600px;
-            margin: 0 auto;
         }
         .card-header {
             background-color: #3498db;
@@ -26,53 +23,112 @@
         }
         .sidebar {
             background-color: #2c3e50;
-            min-height: 100vh;
             color: white;
-            padding: 20px;
+            min-height: 100%;
+        }
+        .sidebar-content {
+            position: sticky;
+            top: 0;
         }
         .nav-link {
             color: rgba(255, 255, 255, 0.8);
         }
-        .nav-link:hover {
+        .nav-link:hover, .nav-link.active {
             color: white;
             background-color: #3498db;
+        }
+        .offcanvas {
+            background-color: #2c3e50;
+            color: white;
+        }
+        @media (max-width: 767.98px) {
+            .desktop-sidebar {
+                display: none;
+            }
+        }
+        @media (min-width: 768px) {
+            .mobile-nav {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 sidebar">
-                <h4 class="mb-4">Security Dashboard</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'security_home' %}">
-                            <i class="fas fa-tachometer-alt me-2"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'handle_unexpected_visitor' %}">
-                            <i class="fas fa-user-plus me-2"></i> Unexpected
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="fas fa-sign-in-alt me-2"></i> Check In
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="{% url 'logout' %}">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                        </a>
-                    </li>
-                </ul>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Desktop Sidebar -->
+            <div class="col-md-3 col-lg-2 desktop-sidebar sidebar d-md-block">
+                <div class="sidebar-content p-3 py-4">
+                    <h4 class="mb-4">Security Dashboard</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'security_home' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'handle_unexpected_visitor' %}">
+                                <i class="fas fa-user-plus me-2"></i> Unexpected
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link active rounded" href="#">
+                                <i class="fas fa-sign-in-alt me-2"></i> Check In
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-danger rounded" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Bar -->
+            <div class="mobile-nav col-12 bg-dark text-white p-3 d-flex justify-content-between align-items-center d-md-none">
+                <h4 class="m-0">Security Dashboard</h4>
+                <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Offcanvas Sidebar for Mobile -->
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">Security Dashboard</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'security_home' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link rounded" href="{% url 'handle_unexpected_visitor' %}">
+                                <i class="fas fa-user-plus me-2"></i> Unexpected
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link active rounded" href="#">
+                                <i class="fas fa-sign-in-alt me-2"></i> Check In
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-danger rounded" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Check In Visitor</h2>
+            <div class="col-md-9 col-lg-10 px-3 px-md-4 py-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+                    <h2 class="mb-3 mb-md-0">Check In Visitor</h2>
                     <a href="{% url 'security_dashboard' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
                     </a>
@@ -87,9 +143,9 @@
                     {% endfor %}
                 {% endif %}
 
-                <div class="card">
+                <div class="card mx-auto" style="max-width: 600px;">
                     <div class="card-header">
-                        <h5>Visitor Verification</h5>
+                        <h5 class="mb-0">Visitor Verification</h5>
                     </div>
                     <div class="card-body">
                         <form method="post" enctype="multipart/form-data">
@@ -100,7 +156,7 @@
                             </div>
                             
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-12 col-sm-6 mb-3 mb-sm-0">
                                     <label class="form-label">ID Proof Type</label>
                                     <select class="form-select" name="id_proof_type" required>
                                         <option value="" disabled selected>Select ID Type</option>
@@ -111,19 +167,19 @@
                                         <option value="Voter ID">Voter ID</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-12 col-sm-6">
                                     <label class="form-label">ID Proof Number</label>
                                     <input type="text" class="form-control" name="id_proof_number" required>
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label class="form-label">ID Proof Image</label>
                                 <input type="file" class="form-control" name="id_proof_image" required>
                             </div>
                             
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit" class="btn btn-primary px-4 py-2">
                                     <i class="fas fa-sign-in-alt me-2"></i> Check In
                                 </button>
                             </div>

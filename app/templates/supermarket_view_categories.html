@@ -4,142 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Categories</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
+        .custom-header {
             background-color: #2ecc71;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .back-btn {
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .back-btn:hover {
-            background-color: #1a252f;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
         }
         .table-container {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f8f9fa;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-        tr:hover {
-            background-color: #f8f9fa;
         }
         .action-btn {
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-            margin-right: 5px;
-        }
-        .edit-btn {
-            background-color: #3498db;
-            color: white;
-        }
-        .edit-btn:hover {
-            background-color: #2980b9;
-        }
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .delete-btn:hover {
-            background-color: #c0392b;
-        }
-        .add-new {
-            display: inline-block;
-            background-color: #2ecc71;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        .add-new:hover {
-            background-color: #27ae60;
+            font-size: 0.875rem;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Product Categories</h1>
-        <a href="/supermarket_home/" class="back-btn">Back to Dashboard</a>
-    </div>
-    
-    <div class="container">
-        <a href="/supermarket_add_category/" class="add-new">Add New Category</a>
-        
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for category in categories %}
-                    <tr>
-                        <td>{{ category.id }}</td>
-                        <td>{{ category.name }}</td>
-                        <td>{{ category.description|truncatechars:50 }}</td>
-                        <td>
-                            <a href="/supermarket_edit_category/{{ category.id }}/" class="action-btn edit-btn">Edit</a>
-                            <a href="/supermarket_delete_category/{{ category.id }}/" class="action-btn delete-btn">Delete</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" style="text-align: center;">No categories found</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<body class="bg-light">
+    <div class="custom-header text-white p-3 mb-4 shadow-sm">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-0">Product Categories</h1>
+                </div>
+                <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                    <a href="/supermarket_home/" class="btn btn-dark btn-sm">Back to Dashboard</a>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <div class="container py-3">
+        <div class="mb-3">
+            <a href="/supermarket_add_category/" class="btn btn-success">Add New Category</a>
+        </div>
+        
+        <div class="card table-container">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ category.id }}</td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description|truncatechars:50 }}</td>
+                                <td>
+                                    <a href="/supermarket_edit_category/{{ category.id }}/" class="btn btn-primary btn-sm action-btn me-1 mb-1 mb-md-0">Edit</a>
+                                    <a href="/supermarket_delete_category/{{ category.id }}/" class="btn btn-danger btn-sm action-btn">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No categories found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

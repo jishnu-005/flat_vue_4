@@ -1,130 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Complaint</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f7fa;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: white;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-            border-radius: 10px;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            margin-top: 0;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #eaeaea;
-            margin-bottom: 25px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 16px;
-            transition: border 0.3s ease;
-            resize: vertical;
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-        
-        textarea::placeholder {
-            color: #95a5a6;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-        
-        .btn-submit {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .btn-submit:hover {
-            background-color: #2980b9;
+        .btn-submit:hover, .btn-back:hover {
             transform: translateY(-2px);
-        }
-        
-        .btn-back {
-            background-color: #95a5a6;
-            color: white;
-        }
-        
-        .btn-back:hover {
-            background-color: #7f8c8d;
-            transform: translateY(-2px);
-        }
-        
-        .instructions {
-            color: #7f8c8d;
-            font-size: 14px;
-            margin-top: -15px;
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #2c3e50;
+            transition: transform 0.3s ease;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Submit Complaint</h1>
-        
-        <p class="instructions">Please describe your complaint in detail. Our team will review it and get back to you soon.</p>
-        
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="complaint">Complaint Details</label>
-                <textarea id="complaint" name="complaint" placeholder="Describe your complaint here in detail..." required></textarea>
+<body class="bg-light">
+    <div class="container py-4 py-md-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-body p-4 p-md-5">
+                        <h1 class="mb-4 pb-3 border-bottom text-primary">Submit Complaint</h1>
+                        
+                        <p class="text-muted mb-4 fs-6">Please describe your complaint in detail. Our team will review it and get back to you soon.</p>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="mb-4">
+                                <label for="complaint" class="form-label fw-medium text-dark">Complaint Details</label>
+                                <textarea 
+                                    id="complaint" 
+                                    name="complaint" 
+                                    class="form-control form-control-lg border rounded-3" 
+                                    placeholder="Describe your complaint here in detail..." 
+                                    rows="6" 
+                                    required
+                                ></textarea>
+                            </div>
+                            
+                            <div class="d-flex flex-column flex-sm-row gap-3">
+                                <button type="submit" class="btn btn-primary btn-lg btn-submit mb-2 mb-sm-0">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Complaint
+                                </button>
+                                <a href="javascript:history.back()" class="btn btn-secondary btn-lg btn-back">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn btn-submit">Submit Complaint</button>
-                <a href="javascript:history.back()" class="btn btn-back">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

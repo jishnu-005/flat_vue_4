@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Flat</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Inter font -->
@@ -14,58 +16,30 @@
             --primary-hover: #3a56d4;
             --secondary-color: #48bb78;
             --secondary-hover: #38a169;
-            --text-color: #1f2937;
-            --text-muted: #6b7280;
-            --bg-color: #f9fafb;
-            --card-bg: #ffffff;
-            --input-bg: #f3f4f6;
-            --input-border: #e5e7eb;
-            --input-focus: #dbeafe;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-            --border-radius: 10px;
             --occupied-color: #ff5252;
             --vacant-color: #4caf50;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-        
         body {
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            color: var(--text-color);
-            line-height: 1.6;
             min-height: 100vh;
-            padding-bottom: 2rem;
         }
         
-        .navbar {
+        .custom-navbar {
             background: linear-gradient(to right, #3c0f78, #4361ee);
-            box-shadow: var(--shadow-md);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
         }
         
         .back-btn {
             color: white;
-            font-size: 1.25rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            transition: all 0.3s ease;
-            margin-right: 1rem;
             background-color: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem;
             border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
         
         .back-btn:hover {
@@ -73,26 +47,14 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
         
-        .navbar-title {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-        }
-        
-        .container {
-            max-width: 850px;
-            margin: 2.5rem auto;
-            padding: 2.5rem;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            position: relative;
+        .card {
+            border-radius: 10px;
             overflow: hidden;
             border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
         }
         
-        .container::before {
+        .card::before {
             content: "";
             position: absolute;
             top: 0;
@@ -102,16 +64,20 @@
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
         }
         
-        h2 {
-            margin-bottom: 2rem;
-            font-weight: 700;
+        .card-header {
+            background-color: transparent;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .section-title {
             position: relative;
             padding-bottom: 0.75rem;
             display: inline-block;
-            font-size: 1.75rem;
+            font-weight: 700;
         }
         
-        h2::after {
+        .section-title::after {
             content: "";
             position: absolute;
             bottom: 0;
@@ -122,166 +88,101 @@
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
         }
         
-        form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 1.75rem;
-        }
-        
-        .form-group {
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-        
-        .form-group.full-width {
-            grid-column: span 2;
-        }
-        
-        label {
+        .form-label {
             font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: block;
-            color: var(--text-color);
             font-size: 0.875rem;
         }
         
-        input, select {
-            width: 100%;
+        .form-control, .form-select {
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
             padding: 0.875rem 1rem;
-            border: 1px solid var(--input-border);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
             transition: all 0.3s ease;
-            background-color: var(--input-bg);
         }
         
-        input:focus, select:focus {
-            outline: none;
+        .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-            background-color: var(--card-bg);
+            background-color: #ffffff;
         }
         
-        .error {
-            color: #e53e3e;
-            font-size: 0.75rem;
-            margin-top: 0.375rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            height: 16px;
+        .input-group-text {
+            background-color: transparent;
+            border: none;
         }
         
         .input-hint {
-            color: var(--text-muted);
+            color: #6b7280;
             font-size: 0.75rem;
-            margin-top: 0.25rem;
             font-style: italic;
         }
         
-        button {
+        .error-text {
+            color: #e53e3e;
+            font-size: 0.75rem;
+            font-weight: 500;
+            height: 16px;
+        }
+        
+        .btn-primary {
             background: linear-gradient(to right, var(--primary-color), #667eea);
-            color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: var(--border-radius);
-            font-size: 0.875rem;
-            cursor: pointer;
+            border-radius: 10px;
             font-weight: 600;
-            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
         }
         
-        button:hover {
+        .btn-primary:hover {
             background: linear-gradient(to right, var(--primary-hover), #5a67d8);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
         }
         
-        button:active {
+        .btn-primary:active {
             transform: translateY(0);
         }
         
-        .submit-btn-container {
-            grid-column: span 2;
-            margin-top: 1.5rem;
-            text-align: center;
-        }
-        
-        .submit-btn-container button {
-            min-width: 200px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .submit-btn-container button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: width 0.3s ease;
-        }
-        
-        .submit-btn-container button:hover::after {
-            width: 100%;
-        }
-        
-        /* Status toggle styling */
         .status-toggle {
-            display: flex;
-            align-items: center;
-            background-color: var(--input-bg);
-            border-radius: var(--border-radius);
-            padding: 0.5rem;
-            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
         }
         
         .status-option {
-            flex: 1;
-            text-align: center;
-            padding: 0.75rem;
-            cursor: pointer;
-            border-radius: calc(var(--border-radius) - 5px);
-            transition: all 0.3s ease;
+            position: relative;
         }
         
         .status-option input {
-            display: none;
+            position: absolute;
+            opacity: 0;
         }
         
         .status-option label {
             cursor: pointer;
-            margin-bottom: 0;
             font-weight: 500;
-            color: var(--text-muted);
-        }
-        
-        .status-option input:checked + label {
-            color: white;
+            color: #6b7280;
+            padding: 0.75rem;
+            border-radius: 5px;
+            width: 100%;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
         }
         
         .status-option input:checked + label.vacant {
             background-color: var(--vacant-color);
+            color: white;
         }
         
         .status-option input:checked + label.occupied {
             background-color: var(--occupied-color);
+            color: white;
         }
         
-        /* Add icon to input fields */
-        .input-icon {
-            position: absolute;
-            top: 38px;
-            right: 10px;
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
-        
-        /* Field validation states */
         .field-valid {
             border-color: var(--secondary-color) !important;
         }
@@ -292,123 +193,145 @@
         }
         
         @keyframes highlight {
-            0% { border-color: var(--input-border); }
+            0% { border-color: #e5e7eb; }
             50% { border-color: var(--primary-color); }
-            100% { border-color: var(--input-border); }
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 1rem;
-                padding: 1.5rem;
-                border-radius: var(--border-radius);
-            }
-            
-            form {
-                grid-template-columns: 1fr;
-                grid-gap: 1rem;
-            }
-            
-            .form-group.full-width {
-                grid-column: span 1;
-            }
-            
-            button {
-                width: 100%;
-                padding: 0.875rem;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
+            100% { border-color: #e5e7eb; }
         }
     </style>
 </head>
-<body>
+<body class="pb-4">
     <!-- Navigation Bar with Back Button -->
-    <nav class="navbar">
-        <a href="/admin_flat_list/" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <span class="navbar-title">Add New Flat</span>
+    <nav class="navbar custom-navbar py-3 shadow-sm mb-4">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a href="/admin_flat_list/" class="back-btn me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <span class="text-white fw-semibold fs-5">Add New Flat</span>
+            </div>
+        </div>
     </nav>
 
     <div class="container">
-        <h2>Flat Details</h2>
-        <form method="POST" onsubmit="return validateForm()">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label for="flat_number">Flat Number:</label>
-                <input type="text" id="flat_number" name="flat_number" required>
-                <i class="fas fa-home input-icon"></i>
-                <div class="error" id="flatNumberError"></div>
-                <div class="input-hint">Format: A101, B202, etc.</div>
-            </div>
-
-            <div class="form-group">
-                <label for="floor">Floor:</label>
-                <input type="number" id="floor" name="floor" min="0" max="50" required>
-                <i class="fas fa-layer-group input-icon"></i>
-                <div class="error" id="floorError"></div>
-                <div class="input-hint">Enter floor number (0 for ground floor)</div>
-            </div>
-
-            <div class="form-group">
-                <label for="block">Block:</label>
-                <input type="text" id="block" name="block">
-                <i class="fas fa-building input-icon"></i>
-                <div class="error" id="blockError"></div>
-                <div class="input-hint">Optional (A, B, C, etc.)</div>
-            </div>
-
-            <div class="form-group">
-                <label for="bedrooms">Bedrooms:</label>
-                <select id="bedrooms" name="bedrooms" required>
-                    <option value="">Select</option>
-                    <option value="1">1 Bedroom</option>
-                    <option value="2">2 Bedrooms</option>
-                    <option value="3">3 Bedrooms</option>
-                    <option value="4">4 Bedrooms</option>
-                    <option value="5">5+ Bedrooms</option>
-                </select>
-                <i class="fas fa-bed input-icon"></i>
-                <div class="error" id="bedroomsError"></div>
-            </div>
-
-            <div class="form-group">
-                <label for="square_footage">Square Footage:</label>
-                <input type="number" id="square_footage" name="square_footage" min="300" step="50">
-                <i class="fas fa-ruler-combined input-icon"></i>
-                <div class="error" id="squareFootageError"></div>
-                <div class="input-hint">Optional (in square feet)</div>
-            </div>
-
-            <div class="form-group full-width">
-                <label>Occupancy Status:</label>
-                <div class="status-toggle">
-                    <div class="status-option">
-                        <input type="radio" id="vacant" name="is_occupied" value="False" checked>
-                        <label for="vacant" class="vacant">Vacant</label>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header pt-4 px-4">
+                        <h2 class="section-title fs-3">Flat Details</h2>
                     </div>
-                    <div class="status-option">
-                        <input type="radio" id="occupied" name="is_occupied" value="True">
-                        <label for="occupied" class="occupied">Occupied</label>
+                    <div class="card-body p-4">
+                        <form method="POST" onsubmit="return validateForm()">
+                            {% csrf_token %}
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="flat_number" class="form-label">Flat Number:</label>
+                                        <div class="position-relative">
+                                            <input type="text" id="flat_number" name="flat_number" class="form-control" required>
+                                            <span class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                                <i class="fas fa-home text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <div class="error-text mt-1" id="flatNumberError"></div>
+                                        <div class="input-hint mt-1">Format: A101, B202, etc.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="floor" class="form-label">Floor:</label>
+                                        <div class="position-relative">
+                                            <input type="number" id="floor" name="floor" min="0" max="50" class="form-control" required>
+                                            <span class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                                <i class="fas fa-layer-group text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <div class="error-text mt-1" id="floorError"></div>
+                                        <div class="input-hint mt-1">Enter floor number (0 for ground floor)</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="block" class="form-label">Block:</label>
+                                        <div class="position-relative">
+                                            <input type="text" id="block" name="block" class="form-control">
+                                            <span class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                                <i class="fas fa-building text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <div class="error-text mt-1" id="blockError"></div>
+                                        <div class="input-hint mt-1">Optional (A, B, C, etc.)</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="bedrooms" class="form-label">Bedrooms:</label>
+                                        <div class="position-relative">
+                                            <select id="bedrooms" name="bedrooms" class="form-select" required>
+                                                <option value="">Select</option>
+                                                <option value="1">1 Bedroom</option>
+                                                <option value="2">2 Bedrooms</option>
+                                                <option value="3">3 Bedrooms</option>
+                                                <option value="4">4 Bedrooms</option>
+                                                <option value="5">5+ Bedrooms</option>
+                                            </select>
+                                            <span class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                                <i class="fas fa-bed text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <div class="error-text mt-1" id="bedroomsError"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="square_footage" class="form-label">Square Footage:</label>
+                                        <div class="position-relative">
+                                            <input type="number" id="square_footage" name="square_footage" min="300" step="50" class="form-control">
+                                            <span class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                                <i class="fas fa-ruler-combined text-muted"></i>
+                                            </span>
+                                        </div>
+                                        <div class="error-text mt-1" id="squareFootageError"></div>
+                                        <div class="input-hint mt-1">Optional (in square feet)</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="mb-4">
+                                        <label class="form-label">Occupancy Status:</label>
+                                        <div class="status-toggle d-flex">
+                                            <div class="status-option flex-grow-1">
+                                                <input type="radio" id="vacant" name="is_occupied" value="False" checked>
+                                                <label for="vacant" class="vacant mb-0">Vacant</label>
+                                            </div>
+                                            <div class="status-option flex-grow-1">
+                                                <input type="radio" id="occupied" name="is_occupied" value="True">
+                                                <label for="occupied" class="occupied mb-0">Occupied</label>
+                                            </div>
+                                        </div>
+                                        <div class="input-hint mt-1">Set initial occupancy status</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 text-center mt-3">
+                                    <button type="submit" class="btn btn-primary py-3 px-4">
+                                        <i class="fas fa-plus-circle me-2"></i> Add Flat
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="input-hint">Set initial occupancy status</div>
             </div>
-
-            <div class="submit-btn-container">
-                <button type="submit">
-                    <i class="fas fa-plus-circle"></i> Add Flat
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         // Validate flat number (format like A101, B202, etc.)
         function validateFlatNumber() {
